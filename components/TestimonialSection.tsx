@@ -50,11 +50,11 @@ export function TestimonialSection() {
   }, [])
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+    <section className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">What Our Patients Say</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">What Our Patients Say</h2>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Real experiences from real patients who trust MediCare for their healthcare needs
           </p>
         </div>
@@ -67,10 +67,12 @@ export function TestimonialSection() {
             >
               {testimonials.map((testimonial) => (
                 <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-                  <Card className="bg-white shadow-xl hover:shadow-2xl transition-all duration-300">
+                  <Card className="bg-white dark:bg-gray-800 shadow-xl hover:shadow-2xl transition-all duration-300">
                     <CardContent className="p-8 text-center">
                       <Quote className="w-12 h-12 text-blue-500 mx-auto mb-6" />
-                      <p className="text-lg text-gray-700 mb-8 leading-relaxed italic">"{testimonial.text}"</p>
+                      <p className="text-lg text-gray-700 dark:text-gray-300 mb-8 leading-relaxed italic">
+                        "{testimonial.text}"
+                      </p>
                       <div className="flex items-center justify-center mb-4">
                         {[...Array(testimonial.rating)].map((_, i) => (
                           <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
@@ -83,8 +85,8 @@ export function TestimonialSection() {
                           className="w-16 h-16 rounded-full object-cover"
                         />
                         <div>
-                          <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                          <p className="text-gray-600">{testimonial.role}</p>
+                          <h4 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h4>
+                          <p className="text-gray-600 dark:text-gray-400">{testimonial.role}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -100,7 +102,7 @@ export function TestimonialSection() {
               <button
                 key={index}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "bg-blue-600 w-8" : "bg-gray-300"
+                  index === currentIndex ? "bg-blue-600 w-8" : "bg-gray-300 dark:bg-gray-600"
                 }`}
                 onClick={() => setCurrentIndex(index)}
               />

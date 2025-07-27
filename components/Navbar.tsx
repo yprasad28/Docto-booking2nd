@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { LogOut, User, Calendar, Home } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Navbar() {
   const { user, logout } = useAuth()
@@ -25,6 +26,11 @@ export function Navbar() {
             <Link href={user.role === "doctor" ? "/doctor/dashboard" : "/"} className="text-2xl font-bold text-white">
               DocBook
             </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* other nav items */}
+            <ThemeToggle />
           </div>
 
           <div className="flex items-center space-x-4">

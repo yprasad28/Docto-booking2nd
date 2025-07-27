@@ -11,7 +11,9 @@ const buttonVariants = cva(
         default:
           "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white",
+        // CHANGED: Added dark mode variants for better visibility and contrast
+        outline:
+          "border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-400 dark:hover:text-slate-900",
         secondary:
           "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl",
         ghost: "hover:bg-accent hover:text-accent-foreground",

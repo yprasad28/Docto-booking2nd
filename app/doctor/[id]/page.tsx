@@ -51,12 +51,13 @@ export default function DoctorProfilePage() {
   if (isLoading) {
     return (
       <ProtectedRoute allowedRoles={["patient"]}>
-        <div className="min-h-screen bg-gray-50">
+        {/* CHANGED: Added dark mode classes */}
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
           <ModernNavbar />
           <div className="max-w-4xl mx-auto px-4 py-8">
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading doctor profile...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading doctor profile...</p>
             </div>
           </div>
         </div>
@@ -67,13 +68,14 @@ export default function DoctorProfilePage() {
   if (!doctor) {
     return (
       <ProtectedRoute allowedRoles={["patient"]}>
-        <div className="min-h-screen bg-gray-50">
+        {/* CHANGED: Added dark mode classes */}
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
           <ModernNavbar />
           <div className="max-w-4xl mx-auto px-4 py-8">
             <Card className="text-center py-12">
               <CardContent>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Doctor not found</h3>
-                <p className="text-gray-600">The doctor profile you're looking for doesn't exist.</p>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Doctor not found</h3>
+                <p className="text-gray-600 dark:text-gray-400">The doctor profile you're looking for doesn't exist.</p>
                 <Button className="mt-4" onClick={() => router.push("/find-doctors")}>
                   Back to Search
                 </Button>
@@ -87,7 +89,8 @@ export default function DoctorProfilePage() {
 
   return (
     <ProtectedRoute allowedRoles={["patient"]}>
-      <div className="min-h-screen bg-gray-50">
+      {/* CHANGED: Added dark mode background */}
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
         <ModernNavbar />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -101,27 +104,29 @@ export default function DoctorProfilePage() {
                   className="w-32 h-32 rounded-full object-cover mx-auto md:mx-0"
                 />
                 <div className="flex-1 text-center md:text-left">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{doctor.name}</h1>
-                  <p className="text-xl text-blue-600 font-semibold mb-2">{doctor.specialty}</p>
-                  <p className="text-gray-600 mb-4">{doctor.qualifications}</p>
+                  {/* CHANGED: Added dark mode text colors */}
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">{doctor.name}</h1>
+                  <p className="text-xl text-blue-600 dark:text-blue-400 font-semibold mb-2">{doctor.specialty}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{doctor.qualifications}</p>
 
-                  <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-4">
+                  <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 mb-4">
                     <div className="flex items-center">
                       <Star className="w-5 h-5 text-yellow-400 fill-current mr-1" />
-                      <span className="font-semibold">{doctor.rating}</span>
-                      <span className="text-gray-500 ml-1">({doctor.reviewCount} reviews)</span>
+                      <span className="font-semibold dark:text-gray-100">{doctor.rating}</span>
+                      <span className="text-gray-500 dark:text-gray-400 ml-1">({doctor.reviewCount} reviews)</span>
                     </div>
-                    <div className="flex items-center text-gray-600">
+                    <div className="flex items-center text-gray-600 dark:text-gray-400">
                       <Award className="w-5 h-5 mr-1" />
-                      {doctor.experience} experience
+                      {/* IMPROVEMENT: Added "years" for clarity */}
+                      {doctor.experience} years experience
                     </div>
-                    <div className="flex items-center text-gray-600">
+                    <div className="flex items-center text-gray-600 dark:text-gray-400">
                       <Users className="w-5 h-5 mr-1" />
                       {doctor.reviewCount}+ patients treated
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center md:justify-start text-gray-600 mb-6">
+                  <div className="flex items-center justify-center md:justify-start text-gray-600 dark:text-gray-400 mb-6">
                     <MapPin className="w-5 h-5 mr-2" />
                     {doctor.clinicAddress}
                   </div>
@@ -151,13 +156,13 @@ export default function DoctorProfilePage() {
                   <TabsTrigger value="reviews">Reviews</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="about" className="space-y-6">
+                <TabsContent value="about" className="mt-6 space-y-6">
                   <Card>
                     <CardHeader>
                       <CardTitle>About Dr. {doctor.name.split(" ").pop()}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-700 leading-relaxed">{doctor.about}</p>
+                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{doctor.about}</p>
                     </CardContent>
                   </Card>
 
@@ -168,25 +173,25 @@ export default function DoctorProfilePage() {
                     <CardContent>
                       <div className="space-y-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900">Education</h4>
-                          <p className="text-gray-700">{doctor.qualifications}</p>
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">Education</h4>
+                          <p className="text-gray-700 dark:text-gray-300">{doctor.qualifications}</p>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900">Experience</h4>
-                          <p className="text-gray-700">
-                            {doctor.experience} in {doctor.specialty}
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">Experience</h4>
+                          <p className="text-gray-700 dark:text-gray-300">
+                            {doctor.experience} years in {doctor.specialty}
                           </p>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900">Specialization</h4>
-                          <p className="text-gray-700">{doctor.specialty}</p>
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">Specialization</h4>
+                          <p className="text-gray-700 dark:text-gray-300">{doctor.specialty}</p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="availability" className="space-y-6">
+                <TabsContent value="availability" className="mt-6 space-y-6">
                   <Card>
                     <CardHeader>
                       <CardTitle>Clinic Availability</CardTitle>
@@ -194,9 +199,13 @@ export default function DoctorProfilePage() {
                     <CardContent>
                       <div className="space-y-2">
                         {doctor.availability?.clinic?.map((day) => (
-                          <div key={day} className="flex justify-between items-center py-2 border-b">
+                          // CHANGED: Added dark mode border
+                          <div
+                            key={day}
+                            className="flex justify-between items-center py-2 border-b dark:border-gray-800"
+                          >
                             <span className="font-medium">{day}</span>
-                            <div className="flex space-x-2">
+                            <div className="flex flex-wrap gap-2">
                               {doctor.timeSlots?.slice(0, 3).map((time) => (
                                 <Badge key={time} variant="outline">
                                   {time}
@@ -219,9 +228,13 @@ export default function DoctorProfilePage() {
                     <CardContent>
                       <div className="space-y-2">
                         {doctor.availability?.online?.map((day) => (
-                          <div key={day} className="flex justify-between items-center py-2 border-b">
+                          // CHANGED: Added dark mode border
+                          <div
+                            key={day}
+                            className="flex justify-between items-center py-2 border-b dark:border-gray-800"
+                          >
                             <span className="font-medium">{day}</span>
-                            <div className="flex space-x-2">
+                            <div className="flex flex-wrap gap-2">
                               {doctor.timeSlots?.slice(0, 3).map((time) => (
                                 <Badge key={time} variant="outline">
                                   {time}
@@ -238,7 +251,7 @@ export default function DoctorProfilePage() {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="reviews" className="space-y-6">
+                <TabsContent value="reviews" className="mt-6 space-y-6">
                   <Card>
                     <CardHeader>
                       <CardTitle>Patient Reviews</CardTitle>
@@ -246,28 +259,30 @@ export default function DoctorProfilePage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {/* Sample reviews */}
-                        <div className="border-b pb-4">
+                        {/* IMPROVEMENT: In a real app, these reviews would be fetched dynamically */}
+                        <div className="border-b dark:border-gray-800 pb-4">
                           <div className="flex items-center mb-2">
                             <div className="flex">
                               {[1, 2, 3, 4, 5].map((star) => (
                                 <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
                               ))}
                             </div>
-                            <span className="ml-2 text-sm text-gray-600">John D. • 2 days ago</span>
+                            <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">John D. • 2 days ago</span>
                           </div>
-                          <p className="text-gray-700">Excellent doctor! Very thorough and caring. Highly recommend.</p>
+                          <p className="text-gray-700 dark:text-gray-300">
+                            Excellent doctor! Very thorough and caring. Highly recommend.
+                          </p>
                         </div>
-                        <div className="border-b pb-4">
+                        <div className="border-b dark:border-gray-800 pb-4">
                           <div className="flex items-center mb-2">
                             <div className="flex">
                               {[1, 2, 3, 4, 5].map((star) => (
                                 <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
                               ))}
                             </div>
-                            <span className="ml-2 text-sm text-gray-600">Sarah M. • 1 week ago</span>
+                            <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Sarah M. • 1 week ago</span>
                           </div>
-                          <p className="text-gray-700">
+                          <p className="text-gray-700 dark:text-gray-300">
                             Great experience. The doctor was very professional and explained everything clearly.
                           </p>
                         </div>
@@ -286,15 +301,18 @@ export default function DoctorProfilePage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {doctor.consultationType?.includes("clinic") && (
-                    <div className="p-4 border rounded-lg">
+                    // CHANGED: Added dark mode border
+                    <div className="p-4 border dark:border-gray-800 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center">
-                          <Building className="w-5 h-5 mr-2 text-blue-600" />
+                          <Building className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" />
                           <span className="font-medium">Clinic Visit</span>
                         </div>
-                        <span className="font-semibold text-green-600">${doctor.consultationFee}</span>
+                        <span className="font-semibold text-green-600 dark:text-green-400">
+                          ${doctor.consultationFee}
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">In-person consultation at clinic</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">In-person consultation at clinic</p>
                       <Button className="w-full" onClick={() => handleBookAppointment("clinic")}>
                         Book Clinic Visit
                       </Button>
@@ -302,15 +320,17 @@ export default function DoctorProfilePage() {
                   )}
 
                   {doctor.consultationType?.includes("video") && (
-                    <div className="p-4 border rounded-lg">
+                    <div className="p-4 border dark:border-gray-800 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center">
-                          <Video className="w-5 h-5 mr-2 text-green-600" />
+                          <Video className="w-5 h-5 mr-2 text-green-600 dark:text-green-400" />
                           <span className="font-medium">Video Call</span>
                         </div>
-                        <span className="font-semibold text-green-600">${doctor.videoConsultationFee}</span>
+                        <span className="font-semibold text-green-600 dark:text-green-400">
+                          ${doctor.videoConsultationFee}
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">Online video consultation</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Online video consultation</p>
                       <Button className="w-full" onClick={() => handleBookAppointment("video")}>
                         Book Video Call
                       </Button>
@@ -318,15 +338,18 @@ export default function DoctorProfilePage() {
                   )}
 
                   {doctor.consultationType?.includes("call") && (
-                    <div className="p-4 border rounded-lg">
+                    <div className="p-4 border dark:border-gray-800 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center">
-                          <Phone className="w-5 h-5 mr-2 text-purple-600" />
+                          <Phone className="w-5 h-5 mr-2 text-purple-600 dark:text-purple-400" />
                           <span className="font-medium">Phone Call</span>
                         </div>
-                        <span className="font-semibold text-green-600">${doctor.videoConsultationFee}</span>
+                        {/* FIXED: Using correct fee for phone calls */}
+                        <span className="font-semibold text-green-600 dark:text-green-400">
+                          ${doctor.callConsultationFee}
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">Audio consultation via phone</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Audio consultation via phone</p>
                       <Button className="w-full" onClick={() => handleBookAppointment("call")}>
                         Book Phone Call
                       </Button>
@@ -339,18 +362,18 @@ export default function DoctorProfilePage() {
                 <CardHeader>
                   <CardTitle>Quick Info</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
                   <div className="flex items-center">
-                    <Clock className="w-4 h-4 mr-2 text-gray-500" />
-                    <span className="text-sm">Response time: Within 2 hours</span>
+                    <Clock className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" />
+                    <span>Response time: Within 2 hours</span>
                   </div>
                   <div className="flex items-center">
-                    <Calendar className="w-4 h-4 mr-2 text-gray-500" />
-                    <span className="text-sm">Next available: Today</span>
+                    <Calendar className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" />
+                    <span>Next available: Today</span>
                   </div>
                   <div className="flex items-center">
-                    <Users className="w-4 h-4 mr-2 text-gray-500" />
-                    <span className="text-sm">{doctor.reviewCount}+ patients treated</span>
+                    <Users className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" />
+                    <span>{doctor.reviewCount}+ patients treated</span>
                   </div>
                 </CardContent>
               </Card>

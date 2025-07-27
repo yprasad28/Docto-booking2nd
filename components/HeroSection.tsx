@@ -4,21 +4,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { MapPin, Video, Phone, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { useTheme } from "next-themes"
 
 export function HeroSection() {
+  const { theme } = useTheme()
+
+  const textColor = theme === "dark" ? "text-gray-100" : "text-gray-900"
+  const descColor = theme === "dark" ? "text-gray-300" : "text-gray-600"
+
   return (
     <section className="hero-gradient py-20 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Hero Header */}
         <div className="text-center mb-16 animate-fadeInUp">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+          <h1 className={`text-5xl md:text-7xl font-bold ${textColor} mb-6 leading-tight`}>
             Your Health,
             <br />
             <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
               Our Priority
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className={`text-xl md:text-2xl ${descColor} mb-8 max-w-3xl mx-auto leading-relaxed`}>
             Connect with qualified doctors instantly. Book appointments, get online consultations, and take control of
             your health journey.
           </p>

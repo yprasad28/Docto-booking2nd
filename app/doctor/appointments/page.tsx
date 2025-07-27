@@ -57,18 +57,19 @@ export default function DoctorAppointmentsPage() {
     }
   }
 
-  const getStatusColor = (status: string) => {
+  // FIXED: Replaced with a theme-aware function for better readability in both modes.
+  const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "confirmed":
-        return "bg-green-600"
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
       case "pending":
-        return "bg-yellow-600"
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
       case "cancelled":
-        return "bg-red-600"
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
       case "completed":
-        return "bg-blue-600"
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
       default:
-        return "bg-gray-600"
+        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
     }
   }
 
@@ -88,30 +89,33 @@ export default function DoctorAppointmentsPage() {
 
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
-      <div className="min-h-screen">
+      {/* CHANGED: Added dual-theme background */}
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Navbar />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-4">My Appointments</h1>
-            <p className="text-gray-300">Manage your patient appointments</p>
+            {/* CHANGED: Added dual-theme text colors */}
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">My Appointments</h1>
+            <p className="text-gray-600 dark:text-gray-300">Manage your patient appointments</p>
           </div>
 
           {isLoading ? (
-            <div className="text-center text-white">Loading appointments...</div>
+            <div className="text-center text-gray-500 dark:text-white">Loading appointments...</div>
           ) : appointments.length === 0 ? (
             <Card className="text-center py-12">
               <CardContent>
-                <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">No Appointments</h3>
-                <p className="text-gray-300">You don't have any appointments scheduled yet.</p>
+                <Calendar className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+                {/* CHANGED: Added dual-theme text colors */}
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No Appointments</h3>
+                <p className="text-gray-500 dark:text-gray-400">You don't have any appointments scheduled yet.</p>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-8">
               {Object.entries(groupedAppointments).map(([date, dayAppointments]) => (
                 <div key={date}>
-                  <h2 className="text-2xl font-bold text-white mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                     {new Date(date).toLocaleDateString("en-US", {
                       weekday: "long",
                       year: "numeric",
@@ -128,9 +132,12 @@ export default function DoctorAppointmentsPage() {
                               <User className="w-5 h-5 mr-2" />
                               {appointment.patientName}
                             </CardTitle>
-                            <Badge className={getStatusColor(appointment.status)}>{appointment.status}</Badge>
+                            {/* FIXED: Using a theme-aware function for badge styling */}
+                            <Badge className={`${getStatusBadgeClass(appointment.status)} capitalize`}>
+                              {appointment.status}
+                            </Badge>
                           </div>
-                          <CardDescription className="flex items-center">
+                          <CardDescription className="flex items-center pt-1">
                             <Clock className="w-4 h-4 mr-2" />
                             {appointment.time}
                           </CardDescription>

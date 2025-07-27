@@ -49,7 +49,8 @@ export default function FindDoctorsPage() {
   }
 
   const handleSearch = () => {
-    let filtered = doctors
+    // IMPROVEMENT: Use a shallow copy to prevent potential side effects
+    let filtered = [...doctors]
 
     // Search by name, specialty, or condition
     if (searchTerm) {
@@ -81,6 +82,8 @@ export default function FindDoctorsPage() {
         case "experience":
           return Number.parseInt(b.experience) - Number.parseInt(a.experience)
         case "fee":
+          // NOTE: This assumes 'consultationFee' is the primary fee for sorting.
+          // For more complex scenarios, you might need to sort by specific fees (video, call, etc.).
           return a.consultationFee - b.consultationFee
         case "name":
           return a.name.localeCompare(b.name)
@@ -97,24 +100,27 @@ export default function FindDoctorsPage() {
   }, [searchTerm, selectedSpecialty, selectedLocation, sortBy, doctors])
 
   const getAvailableConsultationTypes = (doctor: Doctor) => {
+    // This helper function is robust and provides a good default.
     return doctor.consultationType || ["clinic"]
   }
 
   return (
     <ProtectedRoute allowedRoles={["patient"]}>
-      <div className="min-h-screen bg-gray-50">
+      {/* CHANGED: Added dark mode background */}
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
         <ModernNavbar />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Find the Right Doctor</h1>
-            <p className="text-gray-600 text-lg">
+            {/* CHANGED: Added dark mode text colors */}
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">Find the Right Doctor</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-lg">
               Search and book appointments with qualified healthcare professionals
             </p>
           </div>
 
-          {/* Advanced Search */}
+          {/* Advanced Search Card will be handled by shadcn's theme */}
           <Card className="mb-8">
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -144,6 +150,7 @@ export default function FindDoctorsPage() {
                   </Select>
                 </div>
                 <div>
+                  {/* NOTE: In a real app, these locations would be fetched from an API */}
                   <Select value={selectedLocation} onValueChange={setSelectedLocation}>
                     <SelectTrigger>
                       <SelectValue placeholder="All Locations" />
@@ -180,21 +187,24 @@ export default function FindDoctorsPage() {
           {/* Results */}
           {isLoading ? (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading doctors...</p>
+              {/* CHANGED: Added dark mode border color */}
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
+              {/* CHANGED: Added dark mode text color */}
+              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading doctors...</p>
             </div>
           ) : filteredDoctors.length === 0 ? (
             <Card className="text-center py-12">
               <CardContent>
-                <Search className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No doctors found</h3>
-                <p className="text-gray-600">Try adjusting your search criteria</p>
+                <Search className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">No doctors found</h3>
+                <p className="text-gray-600 dark:text-gray-400">Try adjusting your search criteria</p>
               </CardContent>
             </Card>
           ) : (
             <>
               <div className="mb-6">
-                <p className="text-gray-600">
+                {/* CHANGED: Added dark mode text color */}
+                <p className="text-gray-600 dark:text-gray-400">
                   Found {filteredDoctors.length} doctor{filteredDoctors.length !== 1 ? "s" : ""}
                 </p>
               </div>
@@ -212,40 +222,46 @@ export default function FindDoctorsPage() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
-                              <h3 className="text-xl font-semibold text-gray-900">{doctor.name}</h3>
-                              <p className="text-blue-600 font-medium">{doctor.specialty}</p>
-                              <p className="text-sm text-gray-600">{doctor.qualifications}</p>
+                              {/* CHANGED: Added dark mode text colors */}
+                              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{doctor.name}</h3>
+                              <p className="text-blue-600 dark:text-blue-400 font-medium">{doctor.specialty}</p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">{doctor.qualifications}</p>
                             </div>
                             <div className="text-right">
                               <div className="flex items-center">
                                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                                <span className="ml-1 text-sm font-medium">{doctor.rating}</span>
-                                <span className="ml-1 text-sm text-gray-500">({doctor.reviewCount})</span>
+                                {/* CHANGED: Added dark mode text colors */}
+                                <span className="ml-1 text-sm font-medium dark:text-gray-200">{doctor.rating}</span>
+                                <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
+                                  ({doctor.reviewCount})
+                                </span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="mt-3 space-y-2">
-                            <div className="flex items-center text-sm text-gray-600">
+                          <div className="mt-3 space-y-2 text-gray-600 dark:text-gray-400">
+                            <div className="flex items-center text-sm">
                               <Calendar className="w-4 h-4 mr-2" />
-                              {doctor.experience} experience
+                              {/* IMPROVEMENT: Added "years" for clarity */}
+                              {doctor.experience} years experience
                             </div>
-                            <div className="flex items-center text-sm text-gray-600">
+                            <div className="flex items-center text-sm">
                               <MapPin className="w-4 h-4 mr-2" />
                               {doctor.clinicAddress.split(",")[0]}
                             </div>
-                            <div className="flex items-center text-sm text-gray-600">
+                            <div className="flex items-center text-sm">
                               <DollarSign className="w-4 h-4 mr-2" />
                               Consultation: ${doctor.consultationFee}
                             </div>
                           </div>
 
                           <div className="mt-4">
-                            <p className="text-sm text-gray-600 line-clamp-2">{doctor.about}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{doctor.about}</p>
                           </div>
 
                           <div className="mt-4 flex items-center justify-between">
-                            <div className="flex space-x-2">
+                            <div className="flex flex-wrap gap-2">
+                              {/* This dynamic badge rendering is a great feature */}
                               {getAvailableConsultationTypes(doctor).map((type) => (
                                 <Badge key={type} variant="secondary" className="text-xs">
                                   {type === "clinic" && <Building className="w-3 h-3 mr-1" />}

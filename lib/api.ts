@@ -1,4 +1,5 @@
 const API_BASE = "http://localhost:3001"
+// const API_BASE = "https://m4pc9y-3001.csb.app";//used for sandbox
 
 export interface Doctor {
   id: string
@@ -101,6 +102,8 @@ export const authAPI = {
     }
   },
 }
+
+
 
 // Doctors API
 export const doctorsAPI = {
@@ -227,6 +230,25 @@ export const appointmentsAPI = {
         throw new Error("Cannot connect to server. Please run 'npm run json-server' in a separate terminal.")
       }
       throw error
+    }
+  },
+  cancelAppointment: async (appointmentId: string): Promise<void> => {
+    // Change '/api/appointments/' to '/appointments/'
+    const response = await fetch(`/appointments/${appointmentId}`, { // <--- CHANGE THIS LINE
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      try {
+        const errorData = JSON.parse(errorText);
+        throw new Error(errorData.message || `Failed to cancel: ${response.statusText}`);
+      } catch {
+        throw new Error(`Failed to cancel: ${response.statusText} - ${errorText || 'No specific error message from server'}`);
+      }
     }
   },
 }

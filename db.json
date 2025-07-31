@@ -324,7 +324,7 @@
       "specialty": "Cardiology",
       "date": "2025-07-27",
       "time": "10:00",
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "id": "1753608244069",
@@ -391,6 +391,62 @@
       "date": "2025-07-27",
       "time": "10:00",
       "status": "pending"
+    },
+    {
+      "id": "1753969192000",
+      "doctorId": "2",
+      "patientId": "1",
+      "doctorName": "Dr. Michael Chen",
+      "patientName": "John Doe",
+      "specialty": "Dermatology",
+      "date": "2025-08-04",
+      "time": "14:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 120
+    },
+    {
+      "id": "1753970290676",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-08-04",
+      "time": "15:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1753971379501",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-08-06",
+      "time": "10:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1753971844236",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-08-08",
+      "time": "16:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
     }
   ]
 }

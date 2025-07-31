@@ -44,12 +44,14 @@ export default function HeroSection() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
               <Button
+                onClick={() => window.location.href = "/auth"}
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 hover:scale-105 transition-transform px-8 py-5 text-lg font-semibold shadow-lg group"
-              >
-                Book Appointment
+        >
+                  Book Appointment
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
+
               <Button
                 size="lg"
                 variant="outline"

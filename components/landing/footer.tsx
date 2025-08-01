@@ -10,10 +10,11 @@ import {
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
 
+// Animation variants
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  transition: { duration: 0.8, ease: "easeOut" },
 }
 
 const staggerContainer = {
@@ -24,9 +25,11 @@ const staggerContainer = {
   },
 }
 
+// Section with in-view detection
 function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+
   return (
     <motion.div ref={ref} initial="initial" animate={isInView ? "animate" : "initial"} className={className}>
       {children}
@@ -34,6 +37,7 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
   )
 }
 
+// Scroll-to-top floating button
 function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -65,10 +69,10 @@ function ScrollToTopButton() {
 export default function Footer() {
   return (
     <AnimatedSection>
-      <footer className="bg-gray-950 text-white relative overflow-hidden">
+      <footer className="bg-gradient-to-br from-[#e0f7fa] via-[#f3e5f5] to-[#ede7f6] text-[#333c57] relative overflow-hidden">
         <div className="container px-4 md:px-6 py-14 max-w-screen-xl mx-auto">
           <motion.div variants={staggerContainer} className="grid gap-10 lg:grid-cols-3">
-            {/* Brand */}
+            {/* Brand Section */}
             <motion.div variants={fadeInUp} className="space-y-5">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-md">
@@ -78,7 +82,7 @@ export default function Footer() {
                   Medicare
                 </span>
               </div>
-              <p className="text-sm text-gray-400 max-w-xs">
+              <p className="text-sm text-gray-700 max-w-xs">
                 Your trusted partner in health, delivering compassionate care with modern excellence.
               </p>
               <div className="flex space-x-3">
@@ -95,13 +99,13 @@ export default function Footer() {
             </motion.div>
 
             {/* Links */}
-            <motion.div variants={fadeInUp} className="grid gap-8 sm:grid-cols-2 text-sm text-gray-400">
+            <motion.div variants={fadeInUp} className="grid gap-8 sm:grid-cols-2 text-sm text-gray-600">
               <div>
-                <h3 className="text-white text-base font-semibold mb-3">Quick Links</h3>
+                <h3 className="text-purple-600 text-base font-semibold mb-3">Quick Links</h3>
                 <ul className="space-y-2">
                   {["Home", "About", "Services", "Testimonials", "Careers"].map((item, i) => (
                     <li key={i}>
-                      <Link href="#" className="hover:text-white flex items-center group">
+                      <Link href="#" className="hover:text-blue-500 flex items-center group">
                         <CheckCircle className="h-3.5 w-3.5 mr-2 text-blue-400 opacity-0 group-hover:opacity-100" />
                         {item}
                       </Link>
@@ -110,11 +114,11 @@ export default function Footer() {
                 </ul>
               </div>
               <div>
-                <h3 className="text-white text-base font-semibold mb-3">Services</h3>
+                <h3 className="text-purple-600 text-base font-semibold mb-3">Services</h3>
                 <ul className="space-y-2">
                   {["General", "Cardiology", "Pediatrics", "Surgery"].map((item, i) => (
                     <li key={i}>
-                      <Link href="#" className="hover:text-white flex items-center group">
+                      <Link href="#" className="hover:text-blue-500 flex items-center group">
                         <CheckCircle className="h-3.5 w-3.5 mr-2 text-green-400 opacity-0 group-hover:opacity-100" />
                         {item}
                       </Link>
@@ -124,9 +128,9 @@ export default function Footer() {
               </div>
             </motion.div>
 
-            {/* Contact */}
-            <motion.div variants={fadeInUp} className="space-y-5 text-sm text-gray-400">
-              <h3 className="text-white text-base font-semibold mb-3">Contact</h3>
+            {/* Contact Info */}
+            <motion.div variants={fadeInUp} className="space-y-5 text-sm text-gray-600">
+              <h3 className="text-purple-600 text-base font-semibold mb-3">Contact</h3>
               <div className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-blue-400 mt-0.5" />
                 <p>123 Health St, Medical City</p>
@@ -146,17 +150,17 @@ export default function Footer() {
             </motion.div>
           </motion.div>
 
-          {/* Bottom */}
+          {/* Footer Bottom */}
           <motion.div
             variants={fadeInUp}
-            className="mt-10 pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500"
+            className="mt-10 pt-6 border-t border-gray-300 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500"
           >
             <p className="text-center md:text-left mb-4 md:mb-0">
               © {new Date().getFullYear()} Medicare. All rights reserved.
             </p>
             <div className="flex space-x-4">
               {["Privacy", "Terms", "Cookies"].map((item, i) => (
-                <Link key={i} href="#" className="hover:text-white">
+                <Link key={i} href="#" className="hover:text-blue-600">
                   {item}
                 </Link>
               ))}
@@ -164,6 +168,8 @@ export default function Footer() {
           </motion.div>
         </div>
       </footer>
+
+      {/* Scroll to top button */}
       <ScrollToTopButton />
     </AnimatedSection>
   )

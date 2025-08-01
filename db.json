@@ -310,7 +310,7 @@
       "specialty": "Cardiology",
       "date": "2025-08-07",
       "time": "14:00",
-      "status": "confirmed",
+      "status": "cancelled",
       "consultationType": "video",
       "symptoms": "hshshs",
       "fee": 100
@@ -379,7 +379,7 @@
       "specialty": "Cardiology",
       "date": "2025-07-27",
       "time": "10:00",
-      "status": "pending"
+      "status": "cancelled"
     },
     {
       "id": "1753609062114",
@@ -447,6 +447,40 @@
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 150
+      "date": "2025-07-30",
+      "time": "11:00",
+      "status": "cancelled",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1753671149792",
+      "doctorId": "4",
+      "patientId": "1",
+      "doctorName": "Dr. James Wilson",
+      "patientName": "John Doe",
+      "specialty": "Orthopedics",
+      "date": "2025-07-30",
+      "time": "09:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 180
+    },
+    {
+      "id": "1753780484677",
+      "doctorId": "2",
+      "patientId": "1",
+      "doctorName": "Dr. Michael Chen",
+      "patientName": "John Doe",
+      "specialty": "Dermatology",
+      "date": "2025-07-31",
+      "time": "09:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 120
     }
   ]
 }

@@ -101,6 +101,14 @@ export default function DoctorAppointmentsPage() {
       });
     }
   };
+  // Function to update an appointment's data in the state
+  const handleAppointmentUpdate = (updatedAppointment: Appointment) => {
+    setAppointments((prevAppointments) =>
+      prevAppointments.map((app) =>
+        app.id === updatedAppointment.id ? updatedAppointment : app
+      )
+    );
+  };
 
   // FIXED: Replaced with a theme-aware function for better readability in both modes.
   const getStatusBadgeClass = (status: string) => {
@@ -233,9 +241,11 @@ export default function DoctorAppointmentsPage() {
                 </p>
               </CardContent>
             </Card>
-          ) : isCalendarView ? ( // <-- THIS IS THE CRUCIAL CHANGE
-            // Render the FullCalendar component if in calendar view
-            <AppointmentCalendar appointments={appointments} />
+          ) : isCalendarView ? (
+            <AppointmentCalendar
+              appointments={appointments}
+              onAppointmentUpdate={handleAppointmentUpdate}
+            />
           ) : (
             // Render the list of appointments, grouped by date (your original structure)
             <div className="space-y-8">

@@ -112,8 +112,6 @@ export const authAPI = {
   },
 };
 
-
-
 // Doctors API
 export const doctorsAPI = {
   async getAll(): Promise<Doctor[]> {
@@ -264,10 +262,11 @@ export const appointmentsAPI = {
   },
   cancelAppointment: async (appointmentId: string): Promise<void> => {
     // Change '/api/appointments/' to '/appointments/'
-    const response = await fetch(`/appointments/${appointmentId}`, { // <--- CHANGE THIS LINE
-      method: 'DELETE',
+    const response = await fetch(`/appointments/${appointmentId}`, {
+      // <--- CHANGE THIS LINE
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -275,10 +274,39 @@ export const appointmentsAPI = {
       const errorText = await response.text();
       try {
         const errorData = JSON.parse(errorText);
-        throw new Error(errorData.message || `Failed to cancel: ${response.statusText}`);
+        throw new Error(
+          errorData.message || `Failed to cancel: ${response.statusText}`
+        );
       } catch {
-        throw new Error(`Failed to cancel: ${response.statusText} - ${errorText || 'No specific error message from server'}`);
+        throw new Error(
+          `Failed to cancel: ${response.statusText} - ${
+            errorText || "No specific error message from server"
+          }`
+        );
       }
     }
   },
-}
+
+  updateSchedule: async (
+    appointmentId: string,
+    newDate: string,
+    newTime: string
+  ) => {
+    // Simulate a successful API response with the updated data
+    const response = {
+      id: appointmentId,
+      date: newDate,
+      time: newTime,
+      // In a real app, the server would return the full updated object
+      // For our mock, we'll return a complete object to test
+      patientName: "John Doe",
+      specialty: "Cardiology",
+      status: "confirmed",
+    };
+
+    // Simulate a network delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return response;
+  },
+};

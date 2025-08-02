@@ -4,28 +4,25 @@
 import React, { useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // For clickable events
-import { type Appointment } from "@/lib/api"; // Your Appointment type
 import { useToast } from "@/hooks/use-toast";
-
+import { appointmentsAPI, type Appointment } from "@/lib/api";
 interface AppointmentCalendarProps {
   appointments: Appointment[];
+  onAppointmentUpdate: (updatedAppointment: Appointment) => void;
 }
 
 export function AppointmentCalendar({
   appointments,
+  onAppointmentUpdate,
 }: AppointmentCalendarProps) {
   const calendarRef = useRef(null);
   const { toast } = useToast();
 
   const events = appointments.map((appointment) => ({
     id: appointment.id,
-    // We'll build the title inside eventContent now for more control
-    // title: `${appointment.patientName} - ${appointment.specialty} (${
-    //   appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)
-    // })`,
     start: `${appointment.date}T${appointment.time}`,
-    // color: getEventColor(appointment.status), // No longer needed directly on event object
     extendedProps: {
       status: appointment.status,
       patientName: appointment.patientName,
@@ -49,7 +46,6 @@ export function AppointmentCalendar({
     }
   }
 
-  // Handle event click if needed (e.g., show details in a dialog)
   const handleEventClick = (clickInfo: any) => {
     toast({
       title: "Appointment Details",
@@ -67,12 +63,54 @@ export function AppointmentCalendar({
       ),
     });
   };
+  // Add a new function to handle dropping an event
+  const handleEventDrop = async (info: any) => {
+    const { event, oldEvent } = info;
+    const newStart = event.startStr.split("T");
+    const newDate = newStart[0];
+    const newTime = newStart[1]
+      ? newStart[1].substring(0, 5)
+      : event.extendedProps.time;
 
+    try {
+      console.log("Attempting to reschedule appointment:", event.id);
+      const updatedAppointment = await appointmentsAPI.updateSchedule(
+        event.id,
+        newDate,
+        newTime
+      );
+      console.log(
+        "API call successful. Updated appointment:",
+        updatedAppointment
+      );
+
+      // After a successful API call, update the parent state
+      onAppointmentUpdate({
+        ...event.extendedProps,
+        id: event.id,
+        date: newDate,
+        time: newTime,
+      });
+
+      toast({
+        title: "Appointment Rescheduled",
+        description: `Appointment for ${event.extendedProps.patientName} was moved to ${newDate} at ${newTime}.`,
+      });
+    } catch (error) {
+      console.error("API call failed:", error); // <-- This will show you the exact error
+      info.revert();
+      toast({
+        title: "Reschedule Failed",
+        description: "An error occurred while rescheduling the appointment.",
+        variant: "destructive",
+      });
+    }
+  };
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
       <FullCalendar
         ref={calendarRef}
-        plugins={[dayGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         weekends={true}
         events={events}
@@ -80,9 +118,10 @@ export function AppointmentCalendar({
         headerToolbar={{
           left: "prev,next today",
           center: "title",
-          right: "dayGridMonth,dayGridWeek,dayGridDay",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
-        // Customize event rendering if more complex display is needed
+        editable={true}
+        eventDrop={handleEventDrop}
         eventContent={(arg) => {
           const { patientName, specialty, status, time } =
             arg.event.extendedProps;

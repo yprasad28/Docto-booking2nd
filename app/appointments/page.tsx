@@ -29,7 +29,6 @@ type AppointmentStatusFilter =
   | "cancelled"
   | "completed";
 
-
 export default function AppointmentsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -214,25 +213,6 @@ export default function AppointmentsPage() {
                         >
                           {appointment.status}
                         </Badge>
-                    </div>
-                    <CardDescription className="flex items-center text-teal-600 dark:text-teal-400 pt-1">
-                      <Stethoscope className="w-4 h-4 mr-2" />
-                      {appointment.specialty}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {new Date(appointment.date).toLocaleDateString(
-                          "en-US",
-                          {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )}
                       </div>
                       <CardDescription className="flex items-center text-teal-600 dark:text-teal-400 pt-1">
                         <Stethoscope className="w-4 h-4 mr-2" />
@@ -278,4 +258,3 @@ export default function AppointmentsPage() {
     </ProtectedRoute>
   );
 }
-

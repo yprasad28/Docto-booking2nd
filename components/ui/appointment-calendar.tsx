@@ -180,13 +180,13 @@ export function AppointmentCalendar({
         eventContent={(arg) => {
           const { patientName, specialty, status, time } =
             arg.event.extendedProps;
-          const statusClass = getEventClasses(status); // Use the new function
+          const statusClass = getEventClasses(status);
 
           return (
             <div
               className={`flex flex-col rounded-md p-1 truncate text-xs cursor-pointer overflow-hidden ${statusClass}`}
             >
-              <div className="font-semibold">
+              <div className="font-semibold ">
                 {time} - {patientName}
               </div>
               <div className="text-gray-600 dark:text-gray-300 text-[10px] truncate">

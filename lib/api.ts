@@ -1,4 +1,5 @@
-const API_BASE = "http://localhost:3001";
+// const API_BASE = "http://localhost:3001";
+const API_BASE = "https://wtxpr5-3001.csb.app";
 
 export interface Doctor {
   id: string;
@@ -33,7 +34,7 @@ export interface Appointment {
   patientId: string;
   date: string;
   time: string;
-  status: "pending" | "confirmed" | "cancelled" | "completed";
+  status: "pending" | "confirmed" | "cancelled" | "completed" | "rescheduled";
   doctorName: string;
   patientName: string;
   specialty: string;
@@ -260,53 +261,78 @@ export const appointmentsAPI = {
       throw error;
     }
   },
-  cancelAppointment: async (appointmentId: string): Promise<void> => {
-    // Change '/api/appointments/' to '/appointments/'
-    const response = await fetch(`/appointments/${appointmentId}`, {
-      // <--- CHANGE THIS LINE
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  async cancelAppointment(appointmentId: string): Promise<Appointment> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/appointments/${appointmentId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "cancelled" }),
+        }
+      );
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      try {
-        const errorData = JSON.parse(errorText);
+      if (!response.ok) {
+        const errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          throw new Error(
+            errorData.message || `Failed to cancel: ${response.statusText}`
+          );
+        } catch {
+          throw new Error(
+            `Failed to cancel: ${response.statusText} - ${
+              errorText || "No specific error message from server"
+            }`
+          );
+        }
+      }
+
+      // This return statement is now correctly inside the try block
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
         throw new Error(
-          errorData.message || `Failed to cancel: ${response.statusText}`
-        );
-      } catch {
-        throw new Error(
-          `Failed to cancel: ${response.statusText} - ${
-            errorText || "No specific error message from server"
-          }`
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
         );
       }
+      throw error;
     }
   },
 
-  updateSchedule: async (
+  async updateSchedule(
     appointmentId: string,
     newDate: string,
     newTime: string
-  ) => {
-    // Simulate a successful API response with the updated data
-    const response = {
-      id: appointmentId,
-      date: newDate,
-      time: newTime,
-      // In a real app, the server would return the full updated object
-      // For our mock, we'll return a complete object to test
-      patientName: "John Doe",
-      specialty: "Cardiology",
-      status: "confirmed",
-    };
-
-    // Simulate a network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    return response;
+  ): Promise<Appointment> {
+    try {
+      const response = await fetch(
+        `${API_BASE}/appointments/${appointmentId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            date: newDate,
+            time: newTime,
+            status: "rescheduled",
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to update appointment schedule");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
   },
 };

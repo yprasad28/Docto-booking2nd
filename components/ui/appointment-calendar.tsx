@@ -12,7 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Filter, ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
+import {
+  Plus,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+  GripVertical,
+} from "lucide-react";
 
 // Modal component imports from shadcn/ui
 import {
@@ -22,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter
+  DialogFooter,
 } from "@/components/ui/dialog";
 
 import { Label } from "@/components/ui/label";
@@ -80,10 +86,10 @@ export function AppointmentCalendar({
     detailsModalOpen: false,
     rescheduleModalOpen: false,
   });
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
-
 
   // Mini calendar state - initialize with current date
   const [miniCalendarDate, setMiniCalendarDate] = useState(() => {
@@ -347,7 +353,7 @@ export function AppointmentCalendar({
   };
 
   const miniCalendarDays = generateMiniCalendarDays();
-  
+
   // This useEffect hook is for debugging purposes and can be removed in production
   useEffect(() => {
     console.log("=== APPOINTMENT DEBUG ===");
@@ -441,7 +447,11 @@ export function AppointmentCalendar({
       {/* Left Sidebar */}
       <div
         className="space-y-6 bg-gray-50 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-700"
-        style={{ width: `${sidebarWidth}px`, minWidth: "200px", maxWidth: "500px" }}
+        style={{
+          width: `${sidebarWidth}px`,
+          minWidth: "200px",
+          maxWidth: "500px",
+        }}
       >
         {/* Request New Appointment Button (as shown in the image) */}
         <Card>
@@ -578,10 +588,7 @@ export function AppointmentCalendar({
                     >
                       {status}
                     </label>
-                    <Badge
-                      variant="secondary"
-                      className="ml-auto text-xs"
-                    >
+                    <Badge variant="secondary" className="ml-auto text-xs">
                       {
                         appointments.filter((app) => app.status === status)
                           .length
@@ -668,7 +675,9 @@ export function AppointmentCalendar({
                     Appointment Details
                   </h4>
                   <Badge
-                    className={`px-2 py-1 text-xs font-medium capitalize ${getEventClasses(tooltip.content.status)}`}
+                    className={`px-2 py-1 text-xs font-medium capitalize ${getEventClasses(
+                      tooltip.content.status
+                    )}`}
                   >
                     {tooltip.content.status}
                   </Badge>
@@ -715,7 +724,12 @@ export function AppointmentCalendar({
       </div>
 
       {/* Appointment Details Modal - Using shadcn/ui Dialog */}
-      <Dialog open={modalState.detailsModalOpen} onOpenChange={(open) => setModalState(prev => ({ ...prev, detailsModalOpen: open }))}>
+      <Dialog
+        open={modalState.detailsModalOpen}
+        onOpenChange={(open) =>
+          setModalState((prev) => ({ ...prev, detailsModalOpen: open }))
+        }
+      >
         <DialogContent>
           {selectedAppointment && (
             <>
@@ -727,11 +741,21 @@ export function AppointmentCalendar({
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <p><b>Patient:</b> {selectedAppointment.patientName}</p>
-                  <p><b>Specialty:</b> {selectedAppointment.specialty}</p>
-                  <p><b>Date:</b> {selectedAppointment.date}</p>
-                  <p><b>Time:</b> {selectedAppointment.time}</p>
-                  <p><b>Status:</b> {selectedAppointment.status}</p>
+                  <p>
+                    <b>Patient:</b> {selectedAppointment.patientName}
+                  </p>
+                  <p>
+                    <b>Specialty:</b> {selectedAppointment.specialty}
+                  </p>
+                  <p>
+                    <b>Date:</b> {selectedAppointment.date}
+                  </p>
+                  <p>
+                    <b>Time:</b> {selectedAppointment.time}
+                  </p>
+                  <p>
+                    <b>Status:</b> {selectedAppointment.status}
+                  </p>
                 </div>
               </div>
               <DialogFooter>
@@ -756,13 +780,17 @@ export function AppointmentCalendar({
                               title: "Appointment Cancelled",
                               description: `Appointment for ${selectedAppointment.patientName} has been cancelled.`,
                             });
-                            setModalState(prev => ({ ...prev, detailsModalOpen: false }));
+                            setModalState((prev) => ({
+                              ...prev,
+                              detailsModalOpen: false,
+                            }));
                           }
                         } catch (error) {
                           console.error("Cancellation failed:", error);
                           toast({
                             title: "Cancellation Failed",
-                            description: "An error occurred while cancelling the appointment.",
+                            description:
+                              "An error occurred while cancelling the appointment.",
                             variant: "destructive",
                           });
                         }
@@ -773,7 +801,12 @@ export function AppointmentCalendar({
                   )}
                 <Button
                   variant="secondary"
-                  onClick={() => setModalState({ detailsModalOpen: false, rescheduleModalOpen: true })}
+                  onClick={() =>
+                    setModalState({
+                      detailsModalOpen: false,
+                      rescheduleModalOpen: true,
+                    })
+                  }
                 >
                   Reschedule
                 </Button>
@@ -782,9 +815,14 @@ export function AppointmentCalendar({
           )}
         </DialogContent>
       </Dialog>
-      
+
       {/* Reschedule Modal - Using shadcn/ui Dialog */}
-      <Dialog open={modalState.rescheduleModalOpen} onOpenChange={(open) => setModalState(prev => ({ ...prev, rescheduleModalOpen: open }))}>
+      <Dialog
+        open={modalState.rescheduleModalOpen}
+        onOpenChange={(open) =>
+          setModalState((prev) => ({ ...prev, rescheduleModalOpen: open }))
+        }
+      >
         <DialogContent>
           {selectedAppointment && (
             <>
@@ -796,8 +834,10 @@ export function AppointmentCalendar({
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-date" className="text-right">New Date</Label>
-                  <Input 
+                  <Label htmlFor="new-date" className="text-right">
+                    New Date
+                  </Label>
+                  <Input
                     id="new-date"
                     type="date"
                     value={newDate}
@@ -806,8 +846,10 @@ export function AppointmentCalendar({
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-time" className="text-right">New Time</Label>
-                  <Input 
+                  <Label htmlFor="new-time" className="text-right">
+                    New Time
+                  </Label>
+                  <Input
                     id="new-time"
                     type="time"
                     value={newTime}
@@ -817,7 +859,15 @@ export function AppointmentCalendar({
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="secondary" onClick={() => setModalState(prev => ({ ...prev, rescheduleModalOpen: false }))}>
+                <Button
+                  variant="secondary"
+                  onClick={() =>
+                    setModalState((prev) => ({
+                      ...prev,
+                      rescheduleModalOpen: false,
+                    }))
+                  }
+                >
                   Cancel
                 </Button>
                 <Button onClick={handleConfirmReschedule}>

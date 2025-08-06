@@ -25,7 +25,16 @@ import {
   ListOrdered, // Added for list toggle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { AppointmentCalendar } from "@/components/ui/appointment-calendar"; // Added: Now exists manually
+import { AppointmentCalendar } from "@/components/ui/appointment-calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { PrescriptionForm } from "@/components/ui/prescription-form"; // Make sure this path is correct
+import { Prescription, prescriptionsAPI } from "@/lib/api";
 import { ModernFooter } from "@/components/ModernFooter"; // Added ModernFooter
 import { Skeleton } from "@/components/ui/skeleton"; // For loading state
 
@@ -37,7 +46,11 @@ export default function DoctorAppointmentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming"); // State for active tab filtering
   const [isCalendarView, setIsCalendarView] = useState(false); // State to toggle between list and calendar view
-
+  const [isPrescriptionModalOpen, setIsPrescriptionModalOpen] = useState(false);
+  const [
+    selectedAppointmentForPrescription,
+    setSelectedAppointmentForPrescription,
+  ] = useState<Appointment | null>(null);
   // Memoized function to load appointments
   const loadAppointments = useCallback(async () => {
     const idToFetch = user?.id;
@@ -108,6 +121,40 @@ export default function DoctorAppointmentsPage() {
         app.id === updatedAppointment.id ? updatedAppointment : app
       )
     );
+  };
+  const handleWritePrescriptionClick = (appointment: Appointment) => {
+    setSelectedAppointmentForPrescription(appointment);
+    setIsPrescriptionModalOpen(true);
+  };
+  const handlePrescriptionAdded = async(prescription: Prescription) => {
+    console.log("Prescription added:", prescription);
+    toast({
+      title: "Prescription Created",
+      description: `A new prescription for ${prescription.medicationName} has been added.`,
+    });
+    if (selectedAppointmentForPrescription) {
+      try {
+        const updatedAppointment = await appointmentsAPI.addPrescription(
+          selectedAppointmentForPrescription.id,
+          prescription
+        );
+        // Update the appointments state to reflect the new prescription and status
+        handleAppointmentUpdate(updatedAppointment); // Use the existing update handler
+        toast({
+          title: "Prescription Assigned",
+          description: `Prescription has been assigned to ${updatedAppointment.patientName}'s appointment.`,
+        });
+      } catch (error) {
+        console.error("Failed to assign prescription to appointment:", error);
+        toast({
+          title: "Error",
+          description: "Failed to assign prescription to appointment. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
+    setIsPrescriptionModalOpen(false);
+    setSelectedAppointmentForPrescription(null);
   };
 
   // FIXED: Replaced with a theme-aware function for better readability in both modes.
@@ -327,19 +374,55 @@ export default function DoctorAppointmentsPage() {
                                 )}
 
                                 {appointment.status === "confirmed" && (
-                                  <Button
-                                    size="sm"
-                                    onClick={() =>
-                                      updateAppointmentStatus(
-                                        appointment.id,
-                                        "completed"
-                                      )
-                                    }
-                                  >
-                                    Mark as Completed
-                                  </Button>
+                                   <div className="flex flex-col gap-2">
+                                   {/* Conditional rendering for Prescription button */}
+                                   {appointment.prescription ? ( // MODIFIED LINE START
+                                     <Button
+                                       size="sm"
+                                       className="w-full bg-blue-500 hover:bg-blue-600" // Changed color for 'View'
+                                       onClick={() => {
+                                         setSelectedAppointmentForPrescription(appointment);
+                                         setIsPrescriptionModalOpen(true); // Re-use the same modal for viewing
+                                       }}
+                                     >
+                                       View Prescription
+                                     </Button>
+                                   ) : (
+                                     <Button
+                                       size="sm"
+                                       className="w-full bg-purple-600 hover:bg-purple-700"
+                                       onClick={() => handleWritePrescriptionClick(appointment)}
+                                     >
+                                       Write Prescription
+                                     </Button>
+                                   )} {/* MODIFIED LINE END */}
+                                   <Button
+                                     size="sm"
+                                     onClick={() =>
+                                       updateAppointmentStatus(
+                                         appointment.id,
+                                         "completed"
+                                       )
+                                     }
+                                     className="w-full"
+                                   >
+                                     Mark as Completed
+                                   </Button>
+                                  </div>
                                 )}
-                              </div>
+                              {appointment.status === "completed" && appointment.prescription && (
+      <Button
+        size="sm"
+        className="w-full bg-blue-500 hover:bg-blue-600"
+        onClick={() => {
+          setSelectedAppointmentForPrescription(appointment);
+          setIsPrescriptionModalOpen(true);
+        }}
+      >
+        View Prescription
+      </Button>
+    )}
+  </div>
                             </CardContent>
                           </Card>
                         ))}
@@ -353,6 +436,43 @@ export default function DoctorAppointmentsPage() {
         </div>
         <ModernFooter />
       </div>
+      <Dialog open={isPrescriptionModalOpen} onOpenChange={setIsPrescriptionModalOpen}>
+      <DialogContent className="sm:max-w-[425px]">
+    <DialogHeader>
+      <DialogTitle>
+        {selectedAppointmentForPrescription?.prescription ? "Prescription Details" : "Write Prescription"} {/* MODIFIED TITLE */}
+      </DialogTitle>
+      <DialogDescription>
+        {selectedAppointmentForPrescription?.prescription
+          ? `Details for ${selectedAppointmentForPrescription?.patientName}'s prescription.`
+          : `Fill in the prescription details for ${selectedAppointmentForPrescription?.patientName}.`} {/* MODIFIED DESCRIPTION */}
+      </DialogDescription>
+    </DialogHeader>
+    {selectedAppointmentForPrescription && (
+      selectedAppointmentForPrescription.prescription ? ( // CONDITIONAL RENDERING START
+        // Display Prescription Details
+        <div className="space-y-4 py-4 text-gray-900 dark:text-gray-50"> {/* Added text color for details */}
+          <p><b>Medicine:</b> {selectedAppointmentForPrescription.prescription.medicationName}</p>
+          <p><b>Dosage:</b> {selectedAppointmentForPrescription.prescription.dosage}</p>
+          <p><b>Frequency:</b> {selectedAppointmentForPrescription.prescription.frequency}</p>
+          {selectedAppointmentForPrescription.prescription.instructions && (
+            <p><b>Instructions:</b> {selectedAppointmentForPrescription.prescription.instructions}</p>
+          )}
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Prescribed on: {new Date(selectedAppointmentForPrescription.prescription.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+      ) : (
+        // Render PrescriptionForm for writing
+        <PrescriptionForm
+          appointmentId={selectedAppointmentForPrescription.id}
+          onPrescriptionAdded={handlePrescriptionAdded}
+          onClose={() => setIsPrescriptionModalOpen(false)}
+        />
+      ) // CONDITIONAL RENDERING END
+    )}
+  </DialogContent>
+</Dialog>
     </ProtectedRoute>
   );
 }

@@ -1,5 +1,5 @@
-const API_BASE = "http://localhost:3001";
-// const API_BASE = "https://wtxpr5-3001.csb.app";
+// const API_BASE = "http://localhost:3001";
+const API_BASE = "https://wtxpr5-3001.csb.app";
 
 export interface Doctor {
   id: string;
@@ -38,8 +38,19 @@ export interface Appointment {
   doctorName: string;
   patientName: string;
   specialty: string;
+  prescription?: Prescription;
 }
-
+export type Prescription = {
+  id: string;
+  medicationName: string;
+  dosage: string;
+  frequency: string;
+  instructions?: string;
+  appointmentId: string;
+  createdAt: string;
+};
+// Mock data store for prescriptions
+const mockPrescriptions: Prescription[] = [];
 // Check if JSON Server is running
 const checkServerStatus = async () => {
   try {
@@ -334,5 +345,63 @@ export const appointmentsAPI = {
       }
       throw error;
     }
+  },
+  async addPrescription(appointmentId: string, prescription: Prescription): Promise<Appointment> {
+    try {
+      // 1. Fetch the existing appointment
+      const response = await fetch(`${API_BASE}/appointments/${appointmentId}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch appointment ${appointmentId}`);
+      }
+      const existingAppointment: Appointment = await response.json();
+
+      // 2. Update the appointment with the new prescription and status
+      const updatedAppointmentData = {
+        ...existingAppointment,
+        prescription: prescription,
+        status: "completed"
+      };
+
+      // 3. Send a PATCH request to update the appointment on the server
+      const patchResponse = await fetch(`${API_BASE}/appointments/${appointmentId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedAppointmentData),
+      });
+
+      if (!patchResponse.ok) {
+        throw new Error(`Failed to update appointment ${appointmentId} with prescription`);
+      }
+
+      return patchResponse.json(); // Return the updated appointment from the server
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      console.error(`Error in addPrescription for appointment ${appointmentId}:`, error);
+      throw error;
+    }
+  },
+};
+
+// A simple mock API for prescriptions
+export const prescriptionsAPI = {
+  create: async (prescriptionData: Omit<Prescription, "id" | "createdAt">) => {
+    // Simulate a network request
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const newPrescription: Prescription = {
+      ...prescriptionData,
+      id: crypto.randomUUID(), // Generates a unique ID
+      createdAt: new Date().toISOString(),
+    };
+    mockPrescriptions.push(newPrescription);
+    console.log("New prescription added:", newPrescription);
+    console.log("All prescriptions:", mockPrescriptions);
+    return newPrescription;
   },
 };

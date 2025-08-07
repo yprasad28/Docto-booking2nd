@@ -424,7 +424,7 @@
       "specialty": "Cardiology",
       "date": "2025-08-12",
       "time": "07:02",
-      "status": "pending",
+      "status": "completed",
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 150
@@ -512,10 +512,249 @@
       "specialty": "Cardiology",
       "date": "2025-08-09",
       "time": "14:00",
+      "status": "completed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1754593270327",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-08-07",
+      "time": "10:00",
       "status": "confirmed",
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 150
+    },
+    {
+      "id": "1754594159646",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-08-10",
+      "time": "14:00",
+      "status": "rescheduled",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1754594282873",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-08-10",
+      "time": "11:00",
+      "status": "completed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "1",
+      "appointmentId": "1753969192000",
+      "patientId": "1",
+      "doctorId": "2",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Michael Chen",
+      "specialty": "Dermatology",
+      "diagnosis": "Acne vulgaris",
+      "medications": [
+        {
+          "id": "med1",
+          "name": "Benzoyl Peroxide 5%",
+          "dosage": "Apply twice daily",
+          "frequency": "Morning and evening",
+          "duration": "4 weeks",
+          "instructions": "Apply to affected areas after washing face"
+        },
+        {
+          "id": "med2",
+          "name": "Clindamycin 1%",
+          "dosage": "Apply once daily",
+          "frequency": "Evening only",
+          "duration": "4 weeks",
+          "instructions": "Apply after benzoyl peroxide"
+        }
+      ],
+      "lifestyleRecommendations": [
+        "Wash face twice daily with gentle cleanser",
+        "Avoid touching face with dirty hands",
+        "Use oil-free sunscreen"
+      ],
+      "followUpDate": "2025-09-04",
+      "createdAt": "2025-08-04T10:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "appointmentId": "1753671149792",
+      "patientId": "1",
+      "doctorId": "4",
+      "patientName": "John Doe",
+      "doctorName": "Dr. James Wilson",
+      "specialty": "Orthopedics",
+      "diagnosis": "Knee pain - suspected ligament strain",
+      "medications": [
+        {
+          "id": "med3",
+          "name": "Ibuprofen 400mg",
+          "dosage": "1 tablet",
+          "frequency": "Every 6 hours as needed",
+          "duration": "7 days",
+          "instructions": "Take with food to avoid stomach upset"
+        }
+      ],
+      "lifestyleRecommendations": [
+        "Rest the affected knee",
+        "Apply ice pack for 20 minutes every 4 hours",
+        "Elevate leg when sitting",
+        "Avoid strenuous activities for 2 weeks"
+      ],
+      "followUpDate": "2025-08-30",
+      "createdAt": "2025-07-30T09:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "1754591116383",
+      "appointmentId": "1754312327084",
+      "patientId": "1",
+      "doctorId": "1",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "diagnosis": "Knee pain - suspected ligament strain",
+      "medications": [
+        {
+          "id": "1",
+          "name": "Ibuprofen 400mg",
+          "dosage": "2",
+          "frequency": "2",
+          "duration": "5",
+          "instructions": "take bed rest for 5 days"
+        }
+      ],
+      "lifestyleRecommendations": [
+        "dont apply force on the knee"
+      ],
+      "followUpDate": "2025-08-13",
+      "status": "active",
+      "createdAt": "2025-08-07T18:25:16.383Z"
+    },
+    {
+      "id": "1754591878606",
+      "appointmentId": "1753608594110",
+      "patientId": "1",
+      "doctorId": "1",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "diagnosis": "fever",
+      "medications": [
+        {
+          "id": "1",
+          "name": "dolo",
+          "dosage": "2",
+          "frequency": "4",
+          "duration": "3",
+          "instructions": "rest"
+        }
+      ],
+      "lifestyleRecommendations": [
+        "rest"
+      ],
+      "followUpDate": "2025-08-13",
+      "status": "active",
+      "createdAt": "2025-08-07T18:37:58.606Z"
+    },
+    {
+      "id": "1754592822711",
+      "appointmentId": "1753970290676",
+      "patientId": "1",
+      "doctorId": "1",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "diagnosis": "magiran",
+      "medications": [
+        {
+          "id": "1",
+          "name": "saridon",
+          "dosage": "2",
+          "frequency": "2",
+          "duration": "1",
+          "instructions": "rest"
+        }
+      ],
+      "lifestyleRecommendations": [
+        "dont use phone too much"
+      ],
+      "followUpDate": "2025-08-09",
+      "status": "active",
+      "createdAt": "2025-08-07T18:53:42.711Z"
+    },
+    {
+      "id": "1754593964055",
+      "appointmentId": "1753608594110",
+      "patientId": "1",
+      "doctorId": "1",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "diagnosis": "cough",
+      "medications": [
+        {
+          "id": "1",
+          "name": "tonic",
+          "dosage": "100ml",
+          "frequency": "6",
+          "duration": "4",
+          "instructions": "warm place "
+        }
+      ],
+      "lifestyleRecommendations": [
+        "take breath"
+      ],
+      "followUpDate": "2025-08-15",
+      "status": "active",
+      "createdAt": "2025-08-07T19:12:44.055Z"
+    },
+    {
+      "id": "1754594390208",
+      "appointmentId": "1754594282873",
+      "patientId": "1",
+      "doctorId": "1",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "diagnosis": "leg fracture",
+      "medications": [
+        {
+          "id": "1",
+          "name": "ibuforem 100mg",
+          "dosage": "5",
+          "frequency": "4",
+          "duration": "4",
+          "instructions": "take bed rest"
+        }
+      ],
+      "lifestyleRecommendations": [
+        "dont force on legs"
+      ],
+      "followUpDate": "2025-08-20",
+      "status": "active",
+      "createdAt": "2025-08-07T19:19:50.208Z"
     }
   ]
 }

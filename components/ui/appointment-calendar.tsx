@@ -64,6 +64,7 @@ export function AppointmentCalendar({
       pending: true,
       cancelled: true,
       completed: true,
+      rescheduled: true,
     },
   });
 
@@ -121,8 +122,11 @@ export function AppointmentCalendar({
   const handleEventClick = (clickInfo: any) => {
     const clickedAppointment: Appointment = {
       id: clickInfo.event.id,
+      doctorId: clickInfo.event.extendedProps.doctorId || "",
+      patientId: clickInfo.event.extendedProps.patientId || "",
       date: clickInfo.event.startStr.split("T")[0],
       time: clickInfo.event.extendedProps.time,
+      doctorName: clickInfo.event.extendedProps.doctorName || "",
       patientName: clickInfo.event.extendedProps.patientName,
       specialty: clickInfo.event.extendedProps.specialty,
       status: clickInfo.event.extendedProps.status,
@@ -216,6 +220,7 @@ export function AppointmentCalendar({
         pending: checked,
         cancelled: checked,
         completed: checked,
+        rescheduled: checked,
       },
     }));
   };
@@ -715,9 +720,7 @@ export function AppointmentCalendar({
         </div>
       </div>
 
-          );
-        }}
-      />
+          
       {isModalOpen && selectedAppointment && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen">

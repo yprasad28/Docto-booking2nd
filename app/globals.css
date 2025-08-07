@@ -272,3 +272,38 @@
   text-transform: capitalize;
   font-weight: 700;
 }
+.fc-prev-button,
+.fc-next-button,
+.fc-today-button {
+  /* Default button state - light gray */
+  @apply bg-gray-100 text-gray-800 border-gray-300 font-semibold transition-all duration-300;
+}
+
+.fc-prev-button:hover,
+.fc-next-button:hover,
+.fc-today-button:hover {
+  @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white border-transparent shadow-lg;
+}
+
+.fc-toolbar-chunk .fc-button {
+  @apply bg-gray-100 text-gray-800 border-transparent font-semibold transition-all duration-300;
+}
+
+.fc-toolbar-chunk .fc-button:hover {
+  /* Apply the hover animation and gradient */
+  @apply transform -translate-y-1 bg-gray-100 border-transparent text-gray-800;
+}
+
+.fc-toolbar-chunk .fc-button-active {
+  /* Active button state - apply the full gradient */
+  @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white border-transparent shadow-lg;
+}
+.fc-button-group .fc-button {
+  /* This adds spacing to the right of each button */
+  @apply mr-2;
+}
+
+/* Remove the margin from the last button in the group */
+.fc-button-group .fc-button:last-child {
+  @apply mr-0;
+}

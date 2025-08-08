@@ -1,5 +1,5 @@
-// const API_BASE = "http://localhost:3001";
-const API_BASE = "https://wtxpr5-3001.csb.app";
+const API_BASE = "http://localhost:3001";
+// const API_BASE = "https://wtxpr5-3001.csb.app";
 
 export interface Doctor {
   id: string;
@@ -40,17 +40,30 @@ export interface Appointment {
   specialty: string;
   prescription?: Prescription;
 }
-export type Prescription = {
+export interface Medication {
   id: string;
-  medicationName: string;
+  name: string;
   dosage: string;
   frequency: string;
-  instructions?: string;
+  duration: string;
+  instructions: string;
+}
+
+export interface Prescription {
+  id: string;
   appointmentId: string;
+  patientId: string;
+  doctorId: string;
+  patientName: string;
+  doctorName: string;
+  specialty: string;
+  diagnosis: string;
+  medications: Medication[];
+  lifestyleRecommendations: string[];
+  followUpDate: string;
   createdAt: string;
-};
-// Mock data store for prescriptions
-const mockPrescriptions: Prescription[] = [];
+  status: "active" | "completed" | "discontinued";
+}
 // Check if JSON Server is running
 const checkServerStatus = async () => {
   try {
@@ -388,20 +401,149 @@ export const appointmentsAPI = {
   },
 };
 
-// A simple mock API for prescriptions
+// Prescriptions API
 export const prescriptionsAPI = {
-  create: async (prescriptionData: Omit<Prescription, "id" | "createdAt">) => {
-    // Simulate a network request
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  // Create new prescription
+  async create(prescriptionData: Omit<Prescription, "id" | "createdAt">): Promise<Prescription> {
+    try {
+      const response = await fetch(`${API_BASE}/prescriptions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...prescriptionData,
+          id: Date.now().toString(),
+          createdAt: new Date().toISOString(),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create prescription");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
+  },
 
-    const newPrescription: Prescription = {
-      ...prescriptionData,
-      id: crypto.randomUUID(), // Generates a unique ID
-      createdAt: new Date().toISOString(),
-    };
-    mockPrescriptions.push(newPrescription);
-    console.log("New prescription added:", newPrescription);
-    console.log("All prescriptions:", mockPrescriptions);
-    return newPrescription;
+  // Get all prescriptions for a patient
+  async getByPatientId(patientId: string): Promise<Prescription[]> {
+    try {
+      const response = await fetch(`${API_BASE}/prescriptions?patientId=${patientId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch prescriptions");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
+  },
+
+  // Get all prescriptions by a doctor
+  async getByDoctorId(doctorId: string): Promise<Prescription[]> {
+    try {
+      const response = await fetch(`${API_BASE}/prescriptions?doctorId=${doctorId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch prescriptions");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
+  },
+
+  // Get prescription by ID
+  async getById(id: string): Promise<Prescription> {
+    try {
+      const response = await fetch(`${API_BASE}/prescriptions/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch prescription");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
+  },
+
+  // Update prescription
+  async update(id: string, data: Partial<Prescription>): Promise<Prescription> {
+    try {
+      const response = await fetch(`${API_BASE}/prescriptions/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update prescription");
+      }
+      return response.json();
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
+  },
+
+  // Delete prescription
+  async delete(id: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE}/prescriptions/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete prescription");
+      }
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
+  },
+
+  // Get prescription by appointment ID
+  async getByAppointmentId(appointmentId: string): Promise<Prescription | null> {
+    try {
+      const response = await fetch(`${API_BASE}/prescriptions?appointmentId=${appointmentId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch prescription");
+      }
+      const prescriptions = await response.json();
+      return prescriptions.length > 0 ? prescriptions[0] : null;
+    } catch (error) {
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Cannot connect to server. Please run 'npm run json-server' in a separate terminal."
+        );
+      }
+      throw error;
+    }
   },
 };

@@ -129,8 +129,11 @@ export function AppointmentCalendar({
   const handleEventClick = (clickInfo: any) => {
     const clickedAppointment: Appointment = {
       id: clickInfo.event.id,
+      doctorId: clickInfo.event.extendedProps.doctorId || "",
+      patientId: clickInfo.event.extendedProps.patientId || "",
       date: clickInfo.event.startStr.split("T")[0],
       time: clickInfo.event.extendedProps.time,
+      doctorName: clickInfo.event.extendedProps.doctorName || "",
       patientName: clickInfo.event.extendedProps.patientName,
       specialty: clickInfo.event.extendedProps.specialty,
       status: clickInfo.event.extendedProps.status,
@@ -224,6 +227,7 @@ export function AppointmentCalendar({
         pending: checked,
         cancelled: checked,
         completed: checked,
+        rescheduled: checked,
       },
     }));
   };
@@ -256,7 +260,7 @@ export function AppointmentCalendar({
   const handleMiniCalendarDateClick = (date: Date) => {
     setCurrentDate(date);
     setCurrentView("timeGridDay"); // Switch to day view
-
+    
     // Use calendar API to navigate to the date
     if (calendarRef.current) {
       const calendarApi = (calendarRef.current as any).getApi();
@@ -276,7 +280,7 @@ export function AppointmentCalendar({
 
   const handleResizeMove = (e: MouseEvent) => {
     if (!isResizing) return;
-
+    
     const deltaX = e.clientX - startX;
     const newWidth = Math.max(200, Math.min(500, startWidth + deltaX));
     setSidebarWidth(newWidth);
@@ -324,23 +328,23 @@ export function AppointmentCalendar({
     const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
-
+    
     const days = [];
     const today = new Date();
-
+    
     for (let i = 0; i < 42; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
-
+      
       const isCurrentMonth = date.getMonth() === month;
       const isToday = date.toDateString() === today.toDateString();
-
+      
       const dateString = formatLocalDate(date);
-
+      
       const hasAppointments = filteredAppointments.some(
         (appointment) => appointment.date === dateString
       );
-
+       
       days.push({
         date,
         isCurrentMonth,
@@ -348,7 +352,7 @@ export function AppointmentCalendar({
         hasAppointments,
       });
     }
-
+    
     return days;
   };
 
@@ -360,8 +364,8 @@ export function AppointmentCalendar({
     console.log(
       "All appointments:",
       appointments.map((app) => ({
-        date: app.date,
-        patientName: app.patientName,
+      date: app.date,
+      patientName: app.patientName,
         status: app.status,
       }))
     );
@@ -372,9 +376,9 @@ export function AppointmentCalendar({
     console.log(
       "August appointments:",
       augustAppointments.map((app) => ({
-        date: app.date,
+      date: app.date,
         day: app.date.split("-")[2],
-        patientName: app.patientName,
+      patientName: app.patientName,
         status: app.status,
       }))
     );
@@ -385,9 +389,9 @@ export function AppointmentCalendar({
     console.log(
       "July appointments:",
       julyAppointments.map((app) => ({
-        date: app.date,
+      date: app.date,
         day: app.date.split("-")[2],
-        patientName: app.patientName,
+      patientName: app.patientName,
         status: app.status,
       }))
     );
@@ -396,11 +400,11 @@ export function AppointmentCalendar({
       "Filtered events for main calendar:",
       events.map((event) => ({
         date: event.start.split("T")[0],
-        patientName: event.extendedProps.patientName,
+      patientName: event.extendedProps.patientName,
         status: event.extendedProps.status,
       }))
     );
-
+    
     console.log("Current filter status:", filters.status);
   }, [appointments, events, filters.status]);
 
@@ -445,7 +449,7 @@ export function AppointmentCalendar({
   return (
     <div className="flex gap-0 h-full">
       {/* Left Sidebar */}
-      <div
+      <div 
         className="space-y-6 bg-gray-50 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-700"
         style={{
           width: `${sidebarWidth}px`,
@@ -456,7 +460,7 @@ export function AppointmentCalendar({
         {/* Request New Appointment Button (as shown in the image) */}
         <Card>
           <CardContent className="p-4">
-            <Button
+            <Button 
               onClick={onNewAppointment}
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
@@ -508,7 +512,7 @@ export function AppointmentCalendar({
                 </div>
               ))}
             </div>
-
+            
             {/* Calendar days */}
             <div className="grid grid-cols-7 gap-1">
               {miniCalendarDays.map((day, index) => (
@@ -538,7 +542,7 @@ export function AppointmentCalendar({
                 </button>
               ))}
             </div>
-
+            
             <Button
               variant="outline"
               size="sm"
@@ -578,7 +582,7 @@ export function AppointmentCalendar({
                     <Checkbox
                       id={`status-${status}`}
                       checked={checked}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={(checked) => 
                         handleStatusFilterChange(status, checked as boolean)
                       }
                     />
@@ -615,24 +619,24 @@ export function AppointmentCalendar({
       {/* Main Calendar */}
       <div className="flex-1">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 relative h-full">
-          <FullCalendar
-            ref={calendarRef}
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            initialDate={currentDate}
-            weekends={true}
-            events={events}
-            eventClick={handleEventClick}
-            eventMouseEnter={handleEventMouseEnter}
-            eventMouseLeave={handleEventMouseLeave}
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay",
-            }}
-            editable={true}
-            eventDrop={handleEventDrop}
-            height="100%"
+                                             <FullCalendar
+               ref={calendarRef}
+               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+               initialView="dayGridMonth"
+               initialDate={currentDate}
+               weekends={true}
+               events={events}
+               eventClick={handleEventClick}
+               eventMouseEnter={handleEventMouseEnter}
+               eventMouseLeave={handleEventMouseLeave}
+               headerToolbar={{
+                 left: "prev,next today",
+                 center: "title",
+                 right: "dayGridMonth,timeGridWeek,timeGridDay",
+               }}
+               editable={true}
+               eventDrop={handleEventDrop}
+               height="100%"
             eventContent={(arg) => {
               const { patientName, specialty, status, time } =
                 arg.event.extendedProps;
@@ -682,7 +686,7 @@ export function AppointmentCalendar({
                     {tooltip.content.status}
                   </Badge>
                 </div>
-
+                
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center">
                     <span className="font-medium text-gray-700 dark:text-gray-300 w-16">
@@ -692,7 +696,7 @@ export function AppointmentCalendar({
                       {tooltip.content.patientName}
                     </span>
                   </div>
-
+                  
                   <div className="flex items-center">
                     <span className="font-medium text-gray-700 dark:text-gray-300 w-16">
                       Specialty:
@@ -701,7 +705,7 @@ export function AppointmentCalendar({
                       {tooltip.content.specialty}
                     </span>
                   </div>
-
+                  
                   <div className="flex items-center">
                     <span className="font-medium text-gray-700 dark:text-gray-300 w-16">
                       Time:
@@ -712,9 +716,9 @@ export function AppointmentCalendar({
                   </div>
                 </div>
               </div>
-
+              
               {/* Tooltip arrow */}
-              <div
+              <div 
                 className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white dark:border-t-gray-900"
                 style={{ marginTop: "-1px" }}
               />
@@ -723,6 +727,7 @@ export function AppointmentCalendar({
         </div>
       </div>
 
+          
       {/* Appointment Details Modal - Using shadcn/ui Dialog */}
       <Dialog
         open={modalState.detailsModalOpen}
@@ -741,22 +746,22 @@ export function AppointmentCalendar({
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <p>
-                    <b>Patient:</b> {selectedAppointment.patientName}
-                  </p>
-                  <p>
-                    <b>Specialty:</b> {selectedAppointment.specialty}
-                  </p>
-                  <p>
-                    <b>Date:</b> {selectedAppointment.date}
-                  </p>
-                  <p>
-                    <b>Time:</b> {selectedAppointment.time}
-                  </p>
-                  <p>
-                    <b>Status:</b> {selectedAppointment.status}
-                  </p>
-                </div>
+                <p>
+                  <b>Patient:</b> {selectedAppointment.patientName}
+                </p>
+                <p>
+                  <b>Specialty:</b> {selectedAppointment.specialty}
+                </p>
+                <p>
+                  <b>Date:</b> {selectedAppointment.date}
+                </p>
+                <p>
+                  <b>Time:</b> {selectedAppointment.time}
+                </p>
+                <p>
+                  <b>Status:</b> {selectedAppointment.status}
+                </p>
+              </div>
               </div>
               <DialogFooter>
                 {selectedAppointment.status !== "cancelled" &&
@@ -765,7 +770,7 @@ export function AppointmentCalendar({
                       variant="destructive"
                       onClick={async () => {
                         // Cancellation logic
-                        try {
+                          try {
                           if (selectedAppointment) {
                             const updatedAppointment =
                               await appointmentsAPI.updateStatus(
@@ -785,14 +790,14 @@ export function AppointmentCalendar({
                               detailsModalOpen: false,
                             }));
                           }
-                        } catch (error) {
-                          console.error("Cancellation failed:", error);
-                          toast({
-                            title: "Cancellation Failed",
-                            description:
-                              "An error occurred while cancelling the appointment.",
-                            variant: "destructive",
-                          });
+                          } catch (error) {
+                            console.error("Cancellation failed:", error);
+                            toast({
+                              title: "Cancellation Failed",
+                              description:
+                                "An error occurred while cancelling the appointment.",
+                              variant: "destructive",
+                            });
                         }
                       }}
                     >

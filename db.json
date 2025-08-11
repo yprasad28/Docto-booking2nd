@@ -10,6 +10,13 @@
       "qualifications": "MD, FACC",
       "experience": "15 years",
       "clinicAddress": "Heart Care Center, 123 Medical Plaza, New York",
+      "clinicName": "Heart Care Center",
+      "clinicPhone": "+1-555-0100",
+      "clinicEmail": "info@heartcarecenter.com",
+      "clinicTiming": "09:00 AM - 06:00 PM",
+      "clinicClosed": "Sunday",
+      "clinicLogo": "/logos/heart-care-center.svg",
+      "clinicRegistration": "Reg. No: HC001234",
       "rating": 4.8,
       "reviewCount": 156,
       "consultationFee": 150,
@@ -52,6 +59,13 @@
       "qualifications": "MD, FAAD",
       "experience": "12 years",
       "clinicAddress": "Skin Care Clinic, 456 Health Street, Los Angeles",
+      "clinicName": "Skin Care Clinic",
+      "clinicPhone": "+1-555-0200",
+      "clinicEmail": "info@skincareclinic.com",
+      "clinicTiming": "08:00 AM - 05:00 PM",
+      "clinicClosed": "Saturday",
+      "clinicLogo": "/logos/skin-care-clinic.svg",
+      "clinicRegistration": "Reg. No: SC005678",
       "rating": 4.9,
       "reviewCount": 203,
       "consultationFee": 120,
@@ -94,6 +108,13 @@
       "qualifications": "MD, PhD",
       "experience": "18 years",
       "clinicAddress": "Neuro Center, 789 Brain Avenue, Chicago",
+      "clinicName": "Neuro Center",
+      "clinicPhone": "+1-555-0300",
+      "clinicEmail": "info@neurocenter.com",
+      "clinicTiming": "08:00 AM - 07:00 PM",
+      "clinicClosed": "Sunday",
+      "clinicLogo": "/logos/neuro-center.svg",
+      "clinicRegistration": "Reg. No: NC009012",
       "rating": 4.7,
       "reviewCount": 134,
       "consultationFee": 200,
@@ -558,6 +579,20 @@
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 150
+    },
+    {
+      "id": "1754629124588",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-08-13",
+      "time": "11:00",
+      "status": "completed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
     }
   ],
   "prescriptions": [
@@ -755,6 +790,32 @@
       "followUpDate": "2025-08-20",
       "status": "active",
       "createdAt": "2025-08-07T19:19:50.208Z"
+    },
+    {
+      "id": "1754629863656",
+      "appointmentId": "1754629124588",
+      "patientId": "1",
+      "doctorId": "1",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "diagnosis": "shoulder pain",
+      "medications": [
+        {
+          "id": "1",
+          "name": "naproxen",
+          "dosage": "10",
+          "frequency": "4",
+          "duration": "5",
+          "instructions": "take bed rest "
+        }
+      ],
+      "lifestyleRecommendations": [
+        "take bed rest"
+      ],
+      "followUpDate": "2025-08-14",
+      "status": "active",
+      "createdAt": "2025-08-08T05:11:03.656Z"
     }
   ]
 }

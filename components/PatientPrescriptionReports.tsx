@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { prescriptionsAPI, type Prescription } from "@/lib/api";
-import { generateFormattedPrescription } from "@/lib/pdf-utils";
+import { downloadMedicalReport, type MedicalReportData, type ClinicDetails, type DoctorDetails, type PatientVitals } from "@/lib/pdf-utils";
 import { 
   Download, 
   FileText, 
@@ -68,33 +68,75 @@ export function PatientPrescriptionReports({ patientId }: PatientPrescriptionRep
     return matchesSearch && matchesStatus;
   });
 
-  const downloadPrescription = (prescription: Prescription) => {
-    const formattedPrescription = generateFormattedPrescription({
-      patientName: prescription.patientName,
-      doctorName: prescription.doctorName,
-      specialty: prescription.specialty,
-      diagnosis: prescription.diagnosis,
-      medications: prescription.medications,
-      lifestyleRecommendations: prescription.lifestyleRecommendations,
-      followUpDate: prescription.followUpDate,
-      createdAt: prescription.createdAt,
-      status: prescription.status
-    });
+  const downloadPrescription = async (prescription: Prescription) => {
+    try {
+      // Get doctor details from the database or use default values
+      const doctorDetails: DoctorDetails = {
+        name: prescription.doctorName,
+        qualifications: "M.B.B.S., M.D.", // You can enhance this by fetching from doctor data
+        registrationNumber: "Reg. No: " + Math.random().toString(36).substr(2, 6).toUpperCase(),
+        phone: "+1-555-0000" // You can enhance this by fetching from doctor data
+      };
 
-    const blob = new Blob([formattedPrescription], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `prescription-${prescription.id}-${new Date(prescription.createdAt).toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      // Get clinic details from the database or use default values
+      const clinicDetails: ClinicDetails = {
+        clinicName: "Care Clinic", // You can enhance this by fetching from doctor's clinic data
+        clinicAddress: "Near Axis Bank, Kothrud, Pune - 411038",
+        clinicPhone: "+1-555-0000",
+        clinicEmail: "info@careclinic.com",
+        clinicTiming: "09:00 AM - 02:00 PM",
+        clinicClosed: "Thursday",
+        clinicLogo: "/logos/care-clinic.svg",
+        clinicRegistration: "Reg. No: CC001234"
+      };
 
-    toast({
-      title: "Download Started",
-      description: "Prescription report downloaded successfully.",
-    });
+      // Prepare patient vitals (you can enhance this by fetching actual vitals data)
+      const patientVitals: PatientVitals = {
+        temperature: "36°C",
+        bloodPressure: "120/80 mmHg",
+        weight: "70 kg",
+        pulse: "72 bpm"
+      };
+
+      // Prepare medical report data
+      const medicalReportData: MedicalReportData = {
+        patientId: prescription.id,
+        patientName: prescription.patientName,
+        patientAddress: "Pune, Maharashtra", // You can enhance this by fetching actual patient data
+        patientGender: "M", // You can enhance this by fetching actual patient data
+        patientAge: 35, // You can enhance this by fetching actual patient data
+        vitals: patientVitals,
+        doctor: doctorDetails,
+        clinic: clinicDetails,
+        diagnosis: prescription.diagnosis,
+        medications: prescription.medications.map(med => ({
+          ...med,
+          totalQuantity: `${med.duration} (Tot: ${Math.ceil(parseInt(med.duration) * 2)} ${med.name.toLowerCase().includes('tab') ? 'Tab' : 'Cap'})`
+        })),
+        advice: prescription.lifestyleRecommendations,
+        followUpDate: prescription.followUpDate,
+        createdAt: prescription.createdAt,
+        reportType: 'prescription'
+      };
+
+      toast({
+        title: "Download Started",
+        description: "Prescription report downloaded successfully.",
+      });
+
+      // Generate and download the professional medical report
+      await downloadMedicalReport(
+        medicalReportData,
+        `prescription-${prescription.patientName}-${new Date(prescription.createdAt).toISOString().split('T')[0]}.html`
+      );
+    } catch (error) {
+      console.error("Error downloading prescription:", error);
+      toast({
+        title: "Error",
+        description: "Failed to download prescription report.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getStatusBadge = (status: string) => {

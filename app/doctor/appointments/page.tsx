@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react"; // Added useCallback
+import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Navbar } from "@/components/Navbar";
@@ -334,8 +335,18 @@ export default function DoctorAppointmentsPage() {
                                 {appointment.time}
                               </CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                                             <DoctorAppointmentActions
+                            <CardContent className="flex flex-col gap-2">
+                              <Link
+                                href={`/doctor/${user?.id}/patient-history/${appointment.patientId}`}
+                              >
+                                <Button
+                                  variant="outline"
+                                  className="w-full"
+                                >
+                                  View History
+                                </Button>
+                              </Link>
+                                <DoctorAppointmentActions
                                  appointmentId={appointment.id}
                                  status={appointment.status}
                                  patientName={appointment.patientName}

@@ -319,6 +319,28 @@
       "email": "john@example.com",
       "password": "patient123",
       "phone": "+1-555-1001"
+    },
+    {
+      "id": "1754907017804",
+      "name": "David Lee",
+      "email": "david@email.com",
+      "phone": "(555) 555-3456",
+      "password": "patient123",
+      "specialty": "",
+      "qualifications": "",
+      "experience": "",
+      "clinicAddress": ""
+    },
+    {
+      "id": "1754912750543",
+      "name": "Alice Bloom",
+      "email": "alice@email.com",
+      "phone": "7896333333",
+      "password": "alice123",
+      "specialty": "",
+      "qualifications": "",
+      "experience": "",
+      "clinicAddress": ""
     }
   ],
   "appointments": [
@@ -593,6 +615,48 @@
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 150
+    },
+    {
+      "id": "1754907081580",
+      "doctorId": "1",
+      "patientId": "1754907017804",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "David Lee",
+      "specialty": "Cardiology",
+      "date": "2025-08-13",
+      "time": "11:00",
+      "status": "completed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1754912869624",
+      "doctorId": "1",
+      "patientId": "1754912750543",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "Alice Bloom",
+      "specialty": "Cardiology",
+      "date": "2025-08-15",
+      "time": "11:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    }
+  ],
+  "diagnoses": [
+    {
+      "id": "diag1",
+      "appointmentId": "1754629124588",
+      "patientId": "1",
+      "doctorId": "1",
+      "patientName": "John Doe",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "General Medicine",
+      "description": "Patient presented with symptoms of a common cold. Advised rest and fluids.",
+      "notes": "No fever, minor congestion. Recommended over-the-counter remedies.",
+      "createdAt": "2023-08-13T12:00:00Z"
     }
   ],
   "prescriptions": [
@@ -695,14 +759,14 @@
       "patientName": "John Doe",
       "doctorName": "Dr. Sarah Johnson",
       "specialty": "Cardiology",
-      "diagnosis": "fever",
+      "diagnosis": "Fever",
       "medications": [
         {
           "id": "1",
-          "name": "dolo",
-          "dosage": "2",
-          "frequency": "4",
-          "duration": "3",
+          "name": "Dolo",
+          "dosage": "200mg",
+          "frequency": "3 times",
+          "duration": "3 days",
           "instructions": "rest"
         }
       ],
@@ -721,14 +785,14 @@
       "patientName": "John Doe",
       "doctorName": "Dr. Sarah Johnson",
       "specialty": "Cardiology",
-      "diagnosis": "magiran",
+      "diagnosis": "Migraine",
       "medications": [
         {
           "id": "1",
-          "name": "saridon",
-          "dosage": "2",
-          "frequency": "2",
-          "duration": "1",
+          "name": "Saridon",
+          "dosage": "20mg",
+          "frequency": "Twice Daily",
+          "duration": "10 days",
           "instructions": "rest"
         }
       ],
@@ -747,14 +811,14 @@
       "patientName": "John Doe",
       "doctorName": "Dr. Sarah Johnson",
       "specialty": "Cardiology",
-      "diagnosis": "cough",
+      "diagnosis": "Cough & Cold",
       "medications": [
         {
           "id": "1",
-          "name": "tonic",
+          "name": "Tonic",
           "dosage": "100ml",
-          "frequency": "6",
-          "duration": "4",
+          "frequency": "Twice",
+          "duration": "30 days",
           "instructions": "warm place "
         }
       ],
@@ -773,14 +837,14 @@
       "patientName": "John Doe",
       "doctorName": "Dr. Sarah Johnson",
       "specialty": "Cardiology",
-      "diagnosis": "leg fracture",
+      "diagnosis": "Leg fracture",
       "medications": [
         {
           "id": "1",
           "name": "ibuforem 100mg",
-          "dosage": "5",
-          "frequency": "4",
-          "duration": "4",
+          "dosage": "50mg",
+          "frequency": "Once daily",
+          "duration": "4 days",
           "instructions": "take bed rest"
         }
       ],
@@ -799,15 +863,15 @@
       "patientName": "John Doe",
       "doctorName": "Dr. Sarah Johnson",
       "specialty": "Cardiology",
-      "diagnosis": "shoulder pain",
+      "diagnosis": "Shoulder pain",
       "medications": [
         {
           "id": "1",
-          "name": "naproxen",
-          "dosage": "10",
-          "frequency": "4",
-          "duration": "5",
-          "instructions": "take bed rest "
+          "name": "Naproxen",
+          "dosage": "10mg",
+          "frequency": "2 times",
+          "duration": "5 days",
+          "instructions": "Take Bed Rest "
         }
       ],
       "lifestyleRecommendations": [
@@ -816,6 +880,40 @@
       "followUpDate": "2025-08-14",
       "status": "active",
       "createdAt": "2025-08-08T05:11:03.656Z"
+    },
+    {
+      "id": "1754907418996",
+      "appointmentId": "1754907081580",
+      "patientId": "1754907017804",
+      "doctorId": "1",
+      "patientName": "David Lee",
+      "doctorName": "Dr. Sarah Johnson",
+      "specialty": "Cardiology",
+      "diagnosis": "Hypertension (High Blood Pressure)",
+      "medications": [
+        {
+          "id": "1",
+          "name": "Lisinopril 10mg",
+          "dosage": "1 tablet",
+          "frequency": "Once daily",
+          "duration": "30 days",
+          "instructions": "Take in the morning with a glass of water. Do not stop taking abruptly."
+        },
+        {
+          "id": "1754907313511",
+          "name": "Aspirin 81mg",
+          "dosage": "1 tablet",
+          "frequency": "Once daily",
+          "duration": "Ongoing",
+          "instructions": "Take at the same time each day, preferably with a meal."
+        }
+      ],
+      "lifestyleRecommendations": [
+        "Monitor blood pressure daily using a home monitor"
+      ],
+      "followUpDate": "2025-09-13",
+      "status": "active",
+      "createdAt": "2025-08-11T10:16:58.996Z"
     }
   ]
 }

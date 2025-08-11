@@ -14,12 +14,13 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { appointmentsAPI, type Appointment } from "@/lib/api";
-import { Calendar, Clock, User, Stethoscope } from "lucide-react"; // Calendar icon for no appointments state
+import { Calendar, Clock, User, Stethoscope,History } from "lucide-react"; // Calendar icon for no appointments state
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { AppointmentActions } from "@/components/AppointmentActions";
 import { useRouter } from "next/navigation"; // NEW: For the "Find a Doctor" button
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // NEW: For filtering tabs
+import Link from "next/link";
 
 // Define possible filter types
 type AppointmentStatusFilter =
@@ -239,13 +240,25 @@ export default function AppointmentsPage() {
                         </div>
                       </div>
                     </CardContent>
-                    <div className="px-6 pb-4">
+                    <div className="px-6 pb-4 flex flex-col space-y-3">
                       <AppointmentActions
                         appointmentId={appointment.id}
                         status={appointment.status}
                         doctorId={appointment.doctorId}
                         onAppointmentAction={loadAppointments}
                       />
+                      {/* <Link
+    href={`/patient/${user?.id}/history?doctorId=${appointment.doctorId}`}
+    className="mt-3" // Add margin to the top of the link
+  >
+    <Button
+      variant="outline"
+      className="w-full flex items-center justify-center gap-2 text-black border-gray-300 bg-purple-200 hover:text-black hover:bg-purple-500 dark:border-gray-600 dark:hover:bg-gray-700 transition-all duration-200 rounded-lg py-3" // Change background color
+    >
+      <History className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+      View History
+    </Button>
+  </Link> */}
                     </div>
                   </Card>
                 )

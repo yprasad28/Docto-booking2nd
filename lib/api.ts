@@ -1,5 +1,5 @@
 const API_BASE = "http://localhost:3001";
-// const API_BASE = "https://wtxpr5-3001.csb.app";
+// const API_BASE = "https://opulent-doodle-g4xvqrq9vv9vcv7w-3001.app.github.dev";
 
 export interface Doctor {
   id: string;
@@ -359,7 +359,7 @@ export const appointmentsAPI = {
       throw error;
     }
   },
-  async addPrescription(appointmentId: string, prescription: Prescription): Promise<Appointment> {
+  async addPrescription(appointmentId: string, prescription:Omit<Prescription, "id" | "createdAt" | "diagnosis">, diagnosis: string): Promise<Appointment> {
     try {
       // 1. Fetch the existing appointment
       const response = await fetch(`${API_BASE}/appointments/${appointmentId}`);
@@ -368,10 +368,23 @@ export const appointmentsAPI = {
       }
       const existingAppointment: Appointment = await response.json();
 
-      // 2. Update the appointment with the new prescription and status
-      const updatedAppointmentData = {
+      // 3. Create the prescription record
+      const prescriptionPayload = {
+        ...prescription,
+        appointmentId: appointmentId,
+        patientId: existingAppointment.patientId,
+        doctorId: existingAppointment.doctorId,
+        patientName: existingAppointment.patientName,
+        doctorName: existingAppointment.doctorName,
+        specialty: existingAppointment.specialty,
+        diagnosis: diagnosis,
+      };
+      const prescriptionResponse = await prescriptionsAPI.create(prescriptionPayload);
+
+       const updatedAppointmentData = {
         ...existingAppointment,
         prescription: prescription,
+        diagnosis: prescriptionResponse,
         status: "completed"
       };
 
@@ -547,3 +560,36 @@ export const prescriptionsAPI = {
     }
   },
 };
+
+export async function getMedicalHistoryForDoctorAndPatient({ doctorId, patientId }: { doctorId: string; patientId: string }): Promise<Appointment[]> {
+  try {
+    const allAppointments = await appointmentsAPI.getByPatientId(patientId);
+    const doctorAppointments = allAppointments.filter(
+      (appt) => appt.doctorId === doctorId
+    );
+
+    const appointmentsWithPrescriptions = await Promise.all(
+      doctorAppointments.map(async (appt) => {
+        const prescription = await prescriptionsAPI.getByAppointmentId(appt.id);
+        return { ...appt, prescription };
+      })
+    );
+    return appointmentsWithPrescriptions;
+  } catch (error) {
+    console.error("Error fetching medical history:", error);
+    return [];
+  }
+}
+
+export async function getUniqueDoctorsForPatient(patientId: string): Promise<Doctor[]> {
+  try {
+    const allAppointments = await appointmentsAPI.getByPatientId(patientId);
+    const doctorIds = [...new Set(allAppointments.map(appt => appt.doctorId))];
+    const doctorsResponse = await fetch(`${API_BASE}/doctors?${doctorIds.map(id => `id=${id}`).join('&')}`);
+    if (!doctorsResponse.ok) throw new Error("Failed to fetch doctors");
+    return doctorsResponse.json();
+  } catch (error) {
+    console.error("Error fetching unique doctors:", error);
+    return [];
+  }
+}

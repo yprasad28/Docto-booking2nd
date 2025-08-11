@@ -15,7 +15,7 @@ import {
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Heart, Video, Phone, User, LogOut, Menu, X, Calendar, FileText } from "lucide-react"
+import { Heart, Video, Phone, User, LogOut, Menu, X, Calendar, FileText,History } from "lucide-react"
 import { ThemeToggle } from "@/components/ThemeToggle"
 
 
@@ -117,6 +117,14 @@ export function ModernNavbar() {
                       </Link>
                     </DropdownMenuItem>
                   )}
+                  <DropdownMenuItem asChild>
+                   <Link
+                    href={`/patient/${user.id}/history`}
+                  >
+                    <History className="mr-2 h-4 w-4" />
+                    <span>My Medical History</span>
+                  </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout

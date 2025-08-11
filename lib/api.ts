@@ -560,3 +560,36 @@ export const prescriptionsAPI = {
     }
   },
 };
+
+export async function getMedicalHistoryForDoctorAndPatient({ doctorId, patientId }: { doctorId: string; patientId: string }): Promise<Appointment[]> {
+  try {
+    const allAppointments = await appointmentsAPI.getByPatientId(patientId);
+    const doctorAppointments = allAppointments.filter(
+      (appt) => appt.doctorId === doctorId
+    );
+
+    const appointmentsWithPrescriptions = await Promise.all(
+      doctorAppointments.map(async (appt) => {
+        const prescription = await prescriptionsAPI.getByAppointmentId(appt.id);
+        return { ...appt, prescription };
+      })
+    );
+    return appointmentsWithPrescriptions;
+  } catch (error) {
+    console.error("Error fetching medical history:", error);
+    return [];
+  }
+}
+
+export async function getUniqueDoctorsForPatient(patientId: string): Promise<Doctor[]> {
+  try {
+    const allAppointments = await appointmentsAPI.getByPatientId(patientId);
+    const doctorIds = [...new Set(allAppointments.map(appt => appt.doctorId))];
+    const doctorsResponse = await fetch(`${API_BASE}/doctors?${doctorIds.map(id => `id=${id}`).join('&')}`);
+    if (!doctorsResponse.ok) throw new Error("Failed to fetch doctors");
+    return doctorsResponse.json();
+  } catch (error) {
+    console.error("Error fetching unique doctors:", error);
+    return [];
+  }
+}

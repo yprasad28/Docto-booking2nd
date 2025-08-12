@@ -643,6 +643,48 @@
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 150
+    },
+    {
+      "id": "1755008195658",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-05-25",
+      "time": "16:00",
+      "status": "confirmed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1755008340281",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2025-02-22",
+      "time": "10:00",
+      "status": "cancelled",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
+    },
+    {
+      "id": "1755008393562",
+      "doctorId": "1",
+      "patientId": "1",
+      "doctorName": "Dr. Sarah Johnson",
+      "patientName": "John Doe",
+      "specialty": "Cardiology",
+      "date": "2024-10-20",
+      "time": "16:00",
+      "status": "completed",
+      "consultationType": "clinic",
+      "symptoms": "",
+      "fee": 150
     }
   ],
   "diagnoses": [

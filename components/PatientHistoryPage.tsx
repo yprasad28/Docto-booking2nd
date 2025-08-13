@@ -4,7 +4,9 @@ import {
   getMedicalHistoryForDoctorAndPatient,
   Appointment,
   Doctor,
-} from '../lib/api'; // Ensure this path is correct for your project
+} from '../lib/api'; 
+import {Navbar} from '../components/Navbar';
+import {ModernFooter} from '../components/ModernFooter';
 
 const PatientHistoryPage = ({ patientId }: { patientId: string }) => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -43,7 +45,9 @@ const PatientHistoryPage = ({ patientId }: { patientId: string }) => {
   }, [selectedDoctor, patientId]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <Navbar />
+      <main className="flex-grow p-8 flex flex-col items-center">
       <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Medical History</h1>
 
@@ -146,6 +150,8 @@ const PatientHistoryPage = ({ patientId }: { patientId: string }) => {
           </div>
         )}
       </div>
+      </main>
+      <ModernFooter />
     </div>
   );
 };

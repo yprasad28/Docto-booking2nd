@@ -1,5 +1,5 @@
-const API_BASE = "http://localhost:3001";
-// const API_BASE = "https://opulent-doodle-g4xvqrq9vv9vcv7w-3001.app.github.dev";
+// const API_BASE = "http://localhost:3001";
+const API_BASE = "https://opulent-doodle-g4xvqrq9vv9vcv7w-3001.app.github.dev";
 
 export interface Doctor {
   id: string;
@@ -39,6 +39,7 @@ export interface Appointment {
   patientName: string;
   specialty: string;
   prescription?: Prescription;
+  reviewId?: string;
 }
 export interface Medication {
   id: string;
@@ -64,6 +65,18 @@ export interface Prescription {
   createdAt: string;
   status: "active" | "completed" | "discontinued";
 }
+
+export type Review = {
+  id: string;
+  appointmentId: string;
+  patientId: string;
+  patientName: string;
+  doctorId: string;
+  rating: number; // 1-5
+  reviewText: string;
+  timestamp: string;
+};
+
 // Check if JSON Server is running
 const checkServerStatus = async () => {
   try {
@@ -593,3 +606,86 @@ export async function getUniqueDoctorsForPatient(patientId: string): Promise<Doc
     return [];
   }
 }
+export const reviewsAPI = {
+  // Simulates submitting a new review
+  submitReview: async (reviewData: {
+    appointmentId: string;
+    rating: number;
+    reviewText: string;
+    patientId: string;
+  }): Promise<Review> => {
+    // First, fetch the appointment to get the doctorId
+    const appointmentResponse = await fetch(`${API_BASE}/appointments/${reviewData.appointmentId}`);
+    if (!appointmentResponse.ok) {
+        throw new Error("Appointment not found.");
+    }
+    const appointment: Appointment = await appointmentResponse.json();
+
+    const newReview = {
+        doctorId: appointment.doctorId,
+        ...reviewData,
+        timestamp: new Date().toISOString(),
+    };
+
+    // Post the new review to the /reviews endpoint
+    const response = await fetch(`${API_BASE}/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReview),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit review.");
+    }
+    const submittedReview: Review = await response.json();
+    
+    // Patch the appointment to link the new review
+    await fetch(`${API_BASE}/appointments/${submittedReview.appointmentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviewId: submittedReview.id }),
+    });
+
+    return submittedReview;
+  },
+
+  // Simulates fetching a single review by its ID
+  getReviewById: async (reviewId: string): Promise<Review> => {
+    const response = await fetch(`${API_BASE}/reviews/${reviewId}`);
+    if (!response.ok) {
+      throw new Error("Review not found.");
+    }
+    return response.json();
+  },
+
+  // Simulates fetching all reviews for a specific doctor
+  getByDoctorId: async (doctorId: string): Promise<Review[]> => {
+    // JSON Server supports filtering with query parameters
+    const response = await fetch(`${API_BASE}/reviews?doctorId=${doctorId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch reviews.");
+    }
+    return response.json();
+  },
+
+  // Helper function to calculate average rating (can be done on the frontend)
+  getAverageRating: (reviews: Review[]): number => {
+    if (reviews.length === 0) {
+      return 0;
+    }
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return parseFloat((totalRating / reviews.length).toFixed(2));
+  },
+  
+  // Helper function to get rating distribution
+  getRatingDistribution: (reviews: Review[]): Record<string, number> => {
+    const distribution: Record<string, number> = { "5": 0, "4": 0, "3": 0, "2": 0, "1": 0 };
+    reviews.forEach(review => {
+        const ratingKey = review.rating.toString();
+        if (ratingKey in distribution) {
+            distribution[ratingKey]++;
+        }
+    });
+    return distribution;
+}
+};

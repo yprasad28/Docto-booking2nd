@@ -14,12 +14,17 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { appointmentsAPI, type Appointment } from "@/lib/api";
-import { Calendar, Clock, User, Stethoscope,History } from "lucide-react"; // Calendar icon for no appointments state
+import { reviewsAPI, type Review } from "@/lib/api"; // NEW: Import review APIs
+import { Calendar, Clock, User, Stethoscope,History,Star as StarIcon, MessageSquare } from "lucide-react"; // Calendar icon for no appointments state
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { AppointmentActions } from "@/components/AppointmentActions";
 import { useRouter } from "next/navigation"; // NEW: For the "Find a Doctor" button
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // NEW: For filtering tabs
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"; // NEW: Dialog for review form
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
 // Define possible filter types
@@ -30,6 +35,112 @@ type AppointmentStatusFilter =
   | "cancelled"
   | "completed";
 
+  const ReviewForm = ({
+  appointmentId,
+  onReviewSubmitted,
+  onClose,
+}: {
+  appointmentId: string;
+  onReviewSubmitted: () => void;
+  onClose: () => void;
+}) => {
+  const [rating, setRating] = useState<number>(0);
+  const [reviewText, setReviewText] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleSubmit = async () => {
+    if (!user || rating === 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please provide a star rating.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await reviewsAPI.submitReview({
+        appointmentId,
+        rating,
+        reviewText,
+        patientId: user.id,
+      });
+      toast({
+        title: "Success!",
+        description: "Your review has been submitted.",
+      });
+      onReviewSubmitted();
+      onClose();
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+      toast({
+        title: "Error",
+        description: "Failed to submit review. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col space-y-4">
+      <DialogHeader>
+        <DialogTitle>Leave a Review</DialogTitle>
+        <DialogDescription>
+          Your feedback helps us improve our services.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex items-center space-x-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <StarIcon
+            key={star}
+            className={`w-6 h-6 cursor-pointer transition-colors ${
+              star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
+            }`}
+            onClick={() => setRating(star)}
+          />
+        ))}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="review-text">Review</Label>
+        <Textarea
+          id="review-text"
+          placeholder="Share your experience..."
+          value={reviewText}
+          onChange={(e) => setReviewText(e.target.value)}
+          rows={4}
+        />
+      </div>
+      <Button onClick={handleSubmit} disabled={isSubmitting}>
+        {isSubmitting ? "Submitting..." : "Submit Review"}
+      </Button>
+    </div>
+  );
+};
+
+// NEW: ViewReview component
+const ViewReview = ({ review }: { review: Review }) => {
+  return (
+    <div className="space-y-2">
+      <DialogHeader>
+        <DialogTitle>Your Review</DialogTitle>
+        <DialogDescription>
+          Here's the feedback you provided.
+        </DialogDescription>
+      </DialogHeader>
+      <h3 className="font-semibold text-lg flex items-center">
+        <StarIcon className="w-5 h-5 mr-2 text-yellow-400 fill-current" />
+        Rating: {review.rating} / 5
+      </h3>
+      <p className="text-gray-600 dark:text-gray-300">{review.reviewText}</p>
+    </div>
+  );
+};
+
 export default function AppointmentsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -39,6 +150,10 @@ export default function AppointmentsPage() {
   const [error, setError] = useState<string | null>(null); // State for API errors
   // State for the selected filter
   const [filter, setFilter] = useState<AppointmentStatusFilter>("all");
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 
   const loadAppointments = async () => {
     if (!user?.id) {
@@ -102,6 +217,29 @@ export default function AppointmentsPage() {
     }
   };
 
+  const handleReviewAction = async (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    if (appointment.reviewId) {
+      try {
+        const reviewData = await reviewsAPI.getReviewById(
+          appointment.reviewId
+        );
+        setSelectedReview(reviewData);
+      } catch (err) {
+        console.error("Failed to load review:", err);
+        toast({
+          title: "Error",
+          description: "Failed to load review details.",
+          variant: "destructive",
+        });
+        setSelectedReview(null);
+      }
+    } else {
+      setSelectedReview(null);
+    }
+    setShowReviewForm(true);
+  };
+  
   return (
     <ProtectedRoute allowedRoles={["patient"]}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -241,24 +379,32 @@ export default function AppointmentsPage() {
                       </div>
                     </CardContent>
                     <div className="px-6 pb-4 flex flex-col space-y-3">
+                      {/* NEW: Conditional Review Button */}
+                    {appointment.status === "completed" && (
+                      <Button
+                        onClick={() => handleReviewAction(appointment)}
+                        variant={appointment.reviewId ? "outline" : "default"}
+                        className="w-full flex items-center justify-center space-x-2"
+                      >
+                        {appointment.reviewId ? (
+                            <>
+                                <MessageSquare className="w-4 h-4" />
+                                <span>View Review</span>
+                            </>
+                        ) : (
+                            <>
+                                <StarIcon className="w-4 h-4" />
+                                <span>Leave a Review</span>
+                            </>
+                        )}
+                      </Button>
+                    )}
                       <AppointmentActions
                         appointmentId={appointment.id}
                         status={appointment.status}
                         doctorId={appointment.doctorId}
                         onAppointmentAction={loadAppointments}
                       />
-                      {/* <Link
-    href={`/patient/${user?.id}/history?doctorId=${appointment.doctorId}`}
-    className="mt-3" // Add margin to the top of the link
-  >
-    <Button
-      variant="outline"
-      className="w-full flex items-center justify-center gap-2 text-black border-gray-300 bg-purple-200 hover:text-black hover:bg-purple-500 dark:border-gray-600 dark:hover:bg-gray-700 transition-all duration-200 rounded-lg py-3" // Change background color
-    >
-      <History className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-      View History
-    </Button>
-  </Link> */}
                     </div>
                   </Card>
                 )
@@ -267,6 +413,21 @@ export default function AppointmentsPage() {
           )}
         </div>
         <ModernFooter />
+        <Dialog open={showReviewForm} onOpenChange={setShowReviewForm}>
+            {selectedAppointment && (
+                <DialogContent>
+                    {selectedReview ? (
+                        <ViewReview review={selectedReview} />
+                    ) : (
+                        <ReviewForm
+                            appointmentId={selectedAppointment.id}
+                            onReviewSubmitted={loadAppointments}
+                            onClose={() => setShowReviewForm(false)}
+                        />
+                    )}
+                </DialogContent>
+            )}
+        </Dialog>
       </div>
     </ProtectedRoute>
   );

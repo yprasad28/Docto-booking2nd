@@ -17,6 +17,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Heart, Video, Phone, User, LogOut, Menu, X, Calendar, FileText,History } from "lucide-react"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { PatientSearchModal } from "@/components/PatientSearchModal"
 
 
 export function ModernNavbar() {
@@ -68,6 +69,10 @@ export function ModernNavbar() {
               <Phone className="w-5 h-5" />
               <span>Call Consultation</span>
             </Link>
+
+            {user?.role === "doctor" && (
+              <PatientSearchModal />
+            )}
           </div>
 
           {/* Right Side */}
@@ -176,6 +181,11 @@ export function ModernNavbar() {
                 <Phone className="w-5 h-5" />
                 <span>Call Consultation</span>
               </Link>
+              {user?.role === "doctor" && (
+                <div className="px-3 py-2">
+                  <PatientSearchModal />
+                </div>
+              )}
               {user ? (
                 <div className="space-y-1">
                   <Link

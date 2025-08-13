@@ -49,6 +49,7 @@ import {
    Calendar as CalendarIcon,
    Search,
    RotateCcw,
+   Download,
 } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
@@ -155,8 +156,8 @@ const [filterStatus, setFilterStatus] = useState<string>("all");
     if (filterDateRange === "custom" && dateRange?.from && dateRange?.to) {
       filtered = filtered.filter(({ appointment }) => {
         const appointmentDate = new Date(appointment.date);
-        const fromUTC = new Date(Date.UTC(dateRange.from.getFullYear(), dateRange.from.getMonth(), dateRange.from.getDate()));
-        const toUTC = new Date(Date.UTC(dateRange.to.getFullYear(), dateRange.to.getMonth(), dateRange.to.getDate(), 23, 59, 59, 999));
+        const fromUTC = new Date(Date.UTC(dateRange.from!.getFullYear(), dateRange.from!.getMonth(), dateRange.from!.getDate()));
+        const toUTC = new Date(Date.UTC(dateRange.to!.getFullYear(), dateRange.to!.getMonth(), dateRange.to!.getDate(), 23, 59, 59, 999));
         return appointmentDate >= fromUTC && appointmentDate <= toUTC;
       });
     } else {
@@ -225,6 +226,218 @@ const handleResetFilters = () => {
     }
   };
 
+  // Function to download patient history as PDF
+  const downloadPatientHistoryPDF = () => {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Patient History - ${patientName}</title>
+        <style>
+          @page {
+            margin: 1cm;
+            size: A4;
+          }
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+          }
+          .header h1 {
+            color: #2563eb;
+            margin: 0;
+            font-size: 28px;
+          }
+          .header p {
+            margin: 5px 0;
+            color: #666;
+          }
+          .patient-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+          }
+          .patient-info h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 18px;
+          }
+          .appointment-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            page-break-inside: avoid;
+          }
+          .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+          }
+          .appointment-date {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2563eb;
+          }
+          .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: capitalize;
+          }
+          .status-confirmed { background: #dcfce7; color: #166534; }
+          .status-pending { background: #fef3c7; color: #92400e; }
+          .status-cancelled { background: #fee2e2; color: #991b1b; }
+          .status-completed { background: #dbeafe; color: #1e40af; }
+          .section {
+            margin-bottom: 15px;
+          }
+          .section h3 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+          }
+          .section h3::before {
+            content: "•";
+            margin-right: 8px;
+            color: #2563eb;
+            font-weight: bold;
+          }
+          .medication-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+          .medication-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+          }
+          .medication-list li:last-child {
+            border-bottom: none;
+          }
+          .no-data {
+            color: #666;
+            font-style: italic;
+          }
+          .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+          }
+          @media print {
+            body { margin: 0; }
+            .appointment-card { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Medical History Report</h1>
+          <p><strong>Patient:</strong> ${patientName}</p>
+          <p><strong>Generated:</strong> ${new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}</p>
+          <p><strong>Doctor:</strong> ${user?.name || 'Dr. Unknown'}</p>
+        </div>
+
+        <div class="patient-info">
+          <h2>Patient Information</h2>
+          <p><strong>Name:</strong> ${patientName}</p>
+          <p><strong>Total Appointments:</strong> ${filteredHistory.length}</p>
+          <p><strong>Report Period:</strong> ${filterDateRange === 'all' ? 'All Time' : 
+            filterDateRange === 'custom' ? 'Custom Range' : 
+            `Last ${filterDateRange} ${parseInt(filterDateRange) === 1 ? 'Month' : 'Months'}`}</p>
+        </div>
+
+        ${filteredHistory.map(({ appointment, prescription }) => `
+          <div class="appointment-card">
+            <div class="appointment-header">
+              <div class="appointment-date">${formatDate(appointment.date)}</div>
+              <span class="status-badge status-${appointment.status}">${appointment.status}</span>
+            </div>
+            
+            <div class="section">
+              <h3>Diagnosis</h3>
+              ${prescription && prescription.diagnosis ? 
+                `<p>${prescription.diagnosis}</p>` : 
+                '<p class="no-data">No diagnosis recorded</p>'}
+            </div>
+
+            <div class="section">
+              <h3>Prescriptions</h3>
+              ${prescription && prescription.medications.length > 0 ? 
+                `<ul class="medication-list">
+                  ${prescription.medications.map(med => 
+                    `<li><strong>${med.name}</strong>: ${med.dosage}, ${med.frequency}, ${med.duration}</li>`
+                  ).join('')}
+                </ul>` : 
+                '<p class="no-data">No prescriptions issued</p>'}
+            </div>
+          </div>
+        `).join('')}
+
+        <div class="footer">
+          <p>This report was generated automatically by the medical system.</p>
+          <p>For any questions, please contact your healthcare provider.</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Create a new window with the HTML content
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(htmlContent);
+      newWindow.document.close();
+      
+      // Wait for content to load then print
+      newWindow.onload = () => {
+        newWindow.print();
+      };
+    } else {
+      // Fallback: create a blob and download as HTML
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `patient-history-${patientName}-${new Date().toISOString().split('T')[0]}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    toast({
+      title: "PDF Download",
+      description: "Patient history report is ready for download. Use your browser's print function to save as PDF.",
+    });
+  };
+
   return (
     <ProtectedRoute allowedRoles={["doctor"]}>
       {/* Added consistent dark mode background */}
@@ -232,13 +445,22 @@ const handleResetFilters = () => {
         <ModernNavbar />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
-            <Button
-              variant="outline"
-              onClick={() => router.back()}
-              className="mb-4 sm:mb-0"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back
-            </Button>
+            <div className="flex gap-3 mb-4 sm:mb-0">
+              <Button
+                variant="outline"
+                onClick={() => router.back()}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" /> Back
+              </Button>
+              <Button
+                variant="default"
+                onClick={downloadPatientHistoryPDF}
+                disabled={isLoading || filteredHistory.length === 0}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Download className="w-4 h-4 mr-2" /> Download PDF
+              </Button>
+            </div>
             <div className="sm:text-right">
               <h1 className="text-3xl font-bold">Medical History</h1>
               <p className="text-lg text-gray-600 dark:text-gray-400">

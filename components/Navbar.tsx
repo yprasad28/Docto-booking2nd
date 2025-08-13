@@ -2,10 +2,11 @@
 
 import { useAuth } from "@/contexts/AuthContext"
 import { Button } from "@/components/ui/button"
-import { LogOut, User, Calendar, Home } from "lucide-react"
+import { LogOut, User, Calendar, Home, FileText } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PatientSearchModal } from "@/components/PatientSearchModal";
 
 export function Navbar() {
   const { user, logout } = useAuth()
@@ -77,6 +78,7 @@ export function Navbar() {
                     Appointments
                   </Button>
                 </Link>
+                <PatientSearchModal />
               </>
             )}
 

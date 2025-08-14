@@ -5,7 +5,7 @@ import {
   Appointment,
   Doctor,
 } from '../lib/api'; 
-import {Navbar} from '../components/Navbar';
+import {ModernNavbar} from '../components/ModernNavbar';
 import {ModernFooter} from '../components/ModernFooter';
 
 const PatientHistoryPage = ({ patientId }: { patientId: string }) => {
@@ -46,7 +46,7 @@ const PatientHistoryPage = ({ patientId }: { patientId: string }) => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <Navbar />
+      <ModernNavbar />
       <main className="flex-grow p-8 flex flex-col items-center">
       <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Medical History</h1>

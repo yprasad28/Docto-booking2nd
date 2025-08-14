@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 import { LogOut, User, Calendar, Home, FileText } from "lucide-react"
 
-import { LogOut, User, Calendar, Home, MessageSquare } from "lucide-react"
+import { MessageSquare } from "lucide-react"
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"

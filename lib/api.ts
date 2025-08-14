@@ -1,5 +1,5 @@
-// const API_BASE = "http://localhost:3001";
-const API_BASE = "https://opulent-doodle-g4xvqrq9vv9vcv7w-3001.app.github.dev";
+const API_BASE = "http://localhost:3001";
+// const API_BASE = "https://opulent-doodle-g4xvqrq9vv9vcv7w-3001.app.github.dev";
 
 export interface Doctor {
   id: string;

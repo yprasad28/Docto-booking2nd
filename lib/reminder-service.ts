@@ -44,8 +44,13 @@ class ReminderService {
   }
 
   private initializeService() {
+    // Ensure this only runs in the browser
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     // Request notification permission
-    if ('Notification' in window) {
+    if (typeof Notification !== 'undefined') {
       Notification.requestPermission();
     }
 
@@ -186,7 +191,12 @@ class ReminderService {
     await this.markReminderAsSent(reminder.id);
 
     // Show browser notification if enabled and permitted
-    if (reminder.reminderSettings.browserNotifications && 'Notification' in window && Notification.permission === 'granted') {
+    if (
+      typeof window !== 'undefined' &&
+      reminder.reminderSettings.browserNotifications &&
+      typeof Notification !== 'undefined' &&
+      Notification.permission === 'granted'
+    ) {
       new Notification('Follow-up Reminder', {
         body: `You have a follow-up appointment with ${reminder.doctorName} on ${new Date(reminder.followUpDate).toLocaleDateString()}`,
         icon: '/favicon.ico',
@@ -195,10 +205,12 @@ class ReminderService {
     }
 
     // Emit custom event for UI components to listen to
-    const event = new CustomEvent('followUpReminder', {
-      detail: reminder
-    });
-    window.dispatchEvent(event);
+    if (typeof window !== 'undefined' && typeof CustomEvent !== 'undefined') {
+      const event = new CustomEvent('followUpReminder', {
+        detail: reminder
+      });
+      window.dispatchEvent(event);
+    }
   }
 
   public async updateReminderSettings(reminderId: string, settings: Partial<ReminderSettings>): Promise<void> {
@@ -232,6 +244,3 @@ class ReminderService {
 
 // Create singleton instance
 export const reminderService = new ReminderService();
-
-// Export types for use in components
-export type { FollowUpReminder, ReminderSettings, ReminderNotification };

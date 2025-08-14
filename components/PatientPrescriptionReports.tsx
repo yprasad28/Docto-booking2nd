@@ -101,28 +101,28 @@ export function PatientPrescriptionReports({ patientId }: PatientPrescriptionRep
       // Prepare medical report data
       const medicalReportData: MedicalReportData = {
         patientId: prescription.id,
-        patientName: prescription.patientName,
+      patientName: prescription.patientName,
         patientAddress: "Pune, Maharashtra", // You can enhance this by fetching actual patient data
         patientGender: "M", // You can enhance this by fetching actual patient data
         patientAge: 35, // You can enhance this by fetching actual patient data
         vitals: patientVitals,
         doctor: doctorDetails,
         clinic: clinicDetails,
-        diagnosis: prescription.diagnosis,
+      diagnosis: prescription.diagnosis,
         medications: prescription.medications.map(med => ({
           ...med,
           totalQuantity: `${med.duration} (Tot: ${Math.ceil(parseInt(med.duration) * 2)} ${med.name.toLowerCase().includes('tab') ? 'Tab' : 'Cap'})`
         })),
         advice: prescription.lifestyleRecommendations,
-        followUpDate: prescription.followUpDate,
-        createdAt: prescription.createdAt,
+      followUpDate: prescription.followUpDate,
+      createdAt: prescription.createdAt,
         reportType: 'prescription'
       };
 
-      toast({
-        title: "Download Started",
-        description: "Prescription report downloaded successfully.",
-      });
+    toast({
+      title: "Download Started",
+      description: "Prescription report downloaded successfully.",
+    });
 
       // Generate and download the professional medical report
       await downloadMedicalReport(

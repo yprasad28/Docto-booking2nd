@@ -470,7 +470,8 @@
       "status": "completed",
       "consultationType": "clinic",
       "symptoms": "",
-      "fee": 150
+      "fee": 150,
+      "reviewId": "8dd3"
     },
     {
       "id": "1753971379501",
@@ -558,7 +559,8 @@
       "status": "completed",
       "consultationType": "clinic",
       "symptoms": "",
-      "fee": 150
+      "fee": 150,
+      "reviewId": "b1e2"
     },
     {
       "id": "1754593270327",
@@ -600,7 +602,8 @@
       "status": "completed",
       "consultationType": "clinic",
       "symptoms": "",
-      "fee": 150
+      "fee": 150,
+      "reviewId": "521c"
     },
     {
       "id": "1754629124588",
@@ -614,7 +617,8 @@
       "status": "completed",
       "consultationType": "clinic",
       "symptoms": "",
-      "fee": 150
+      "fee": 150,
+      "reviewId": "eb3a"
     },
     {
       "id": "1754907081580",
@@ -685,20 +689,6 @@
       "consultationType": "clinic",
       "symptoms": "",
       "fee": 150
-    }
-  ],
-  "diagnoses": [
-    {
-      "id": "diag1",
-      "appointmentId": "1754629124588",
-      "patientId": "1",
-      "doctorId": "1",
-      "patientName": "John Doe",
-      "doctorName": "Dr. Sarah Johnson",
-      "specialty": "General Medicine",
-      "description": "Patient presented with symptoms of a common cold. Advised rest and fluids.",
-      "notes": "No fever, minor congestion. Recommended over-the-counter remedies.",
-      "createdAt": "2023-08-13T12:00:00Z"
     }
   ],
   "prescriptions": [
@@ -956,6 +946,53 @@
       "followUpDate": "2025-09-13",
       "status": "active",
       "createdAt": "2025-08-11T10:16:58.996Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev1",
+      "appointmentId": "a101",
+      "patientId": "p101",
+      "doctorId": "d101",
+      "rating": 5,
+      "reviewText": "Dr. Smith was fantastic, very thorough and kind.",
+      "timestamp": "2023-10-27T10:00:00Z"
+    },
+    {
+      "id": "eb3a",
+      "doctorId": "1",
+      "appointmentId": "1754629124588",
+      "rating": 5,
+      "reviewText": "Very good doctor",
+      "patientId": "1",
+      "timestamp": "2025-08-13T09:48:49.677Z"
+    },
+    {
+      "id": "8dd3",
+      "doctorId": "1",
+      "appointmentId": "1753970290676",
+      "rating": 4,
+      "reviewText": "Affordable,quick recovery,great advices",
+      "patientId": "1",
+      "timestamp": "2025-08-13T10:13:56.134Z"
+    },
+    {
+      "id": "521c",
+      "doctorId": "1",
+      "appointmentId": "1754594282873",
+      "rating": 3,
+      "reviewText": "Good Experience",
+      "patientId": "1",
+      "timestamp": "2025-08-13T12:13:13.546Z"
+    },
+    {
+      "id": "b1e2",
+      "doctorId": "1",
+      "appointmentId": "1754312327084",
+      "rating": 4,
+      "reviewText": "Very Good Doctor,really helpful",
+      "patientId": "1",
+      "timestamp": "2025-08-13T15:28:02.221Z"
     }
   ]
 }

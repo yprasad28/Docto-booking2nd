@@ -3,8 +3,6 @@
 import { useAuth } from "@/contexts/AuthContext"
 import { Button } from "@/components/ui/button"
 
-import { LogOut, User, Calendar, Home, FileText } from "lucide-react"
-
 import { LogOut, User, Calendar, Home, MessageSquare } from "lucide-react"
 
 import Link from "next/link"

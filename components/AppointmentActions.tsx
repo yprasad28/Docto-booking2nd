@@ -155,7 +155,7 @@ export function AppointmentActions({
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+              className="w-full bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
               disabled={isLoadingPrescription}
             >
               {isLoadingPrescription ? "Loading..." : "View Prescription"}
